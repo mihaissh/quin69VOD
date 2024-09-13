@@ -21,14 +21,16 @@ export default function WatchMenu(props) {
       </Button>
       <Menu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
         <Box sx={{ pl: 1 }}>
-          <Box>
-            <Button color="primary" disabled={vod.youtube.length === 0} href={`/youtube/${vod.id}`} startIcon={<YouTubeIcon />} size="large" fullWidth sx={{ justifyContent: "flex-start" }}>
-              Youtube (Vod)
-            </Button>
-          </Box>
+          {vod.youtube.length !== 0 && (
+            <Box>
+              <Button color="primary" disabled={vod.youtube.length === 0} href={`/youtube/${vod.id}`} startIcon={<YouTubeIcon />} size="large" fullWidth sx={{ justifyContent: "flex-start" }}>
+                Youtube (Vod)
+              </Button>
+            </Box>
+          )}
           <Box>
             <Button color="primary" href={`/manual/${vod.id}`} startIcon={<OpenInBrowserIcon />} size="large" fullWidth sx={{ justifyContent: "flex-start" }}>
-              Manual (VOD)
+              Manual (Have your own vod?)
             </Button>
           </Box>
           {vod.games.length !== 0 && (
