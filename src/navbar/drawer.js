@@ -4,13 +4,11 @@ import { Menu } from "@mui/icons-material";
 import HomeIcon from "@mui/icons-material/Home";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import ReportIcon from "@mui/icons-material/Report";
-import VideogameAssetIcon from "@mui/icons-material/VideogameAsset";
 
 const mainLinks = [
   { title: `Home`, path: `/`, icon: <HomeIcon color="primary" /> },
   { title: `Vods`, path: `/vods`, icon: <OndemandVideoIcon color="primary" /> },
   { title: `Issues`, path: `${process.env.REACT_APP_GITHUB}/issues`, icon: <ReportIcon color="primary" /> },
-  { title: `Game Jam`, path: `https://jam.moon2.tv`, icon: <VideogameAssetIcon color="primary" /> },
 ];
 
 export default function DrawerComponent(props) {
