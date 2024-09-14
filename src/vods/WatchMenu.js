@@ -28,11 +28,6 @@ export default function WatchMenu(props) {
               </Button>
             </Box>
           )}
-          <Box>
-            <Button color="primary" href={`/manual/${vod.id}`} startIcon={<OpenInBrowserIcon />} size="large" fullWidth sx={{ justifyContent: "flex-start" }}>
-              Manual (Have your own vod?)
-            </Button>
-          </Box>
           {vod.games.length !== 0 && (
             <Box>
               <Button color="primary" href={`/games/${vod.id}`} startIcon={<YouTubeIcon />} size="large" fullWidth sx={{ justifyContent: "flex-start" }}>
@@ -40,6 +35,11 @@ export default function WatchMenu(props) {
               </Button>
             </Box>
           )}
+          <Box>
+            <Button color="primary" href={`/manual/${vod.id}`} startIcon={<OpenInBrowserIcon />} size="large" fullWidth sx={{ justifyContent: "flex-start" }}>
+              Manual (Have your own vod?)
+            </Button>
+          </Box>
         </Box>
       </Menu>
     </>
