@@ -52,8 +52,9 @@ export default function Games(props) {
     setDrive(vod.drive.filter((data) => data.type === "vod"));
     setGames(vod.games);
     const search = new URLSearchParams(location.search);
-    let tmpPart = search.get("part") !== null ? parseInt(search.get("part")) : 1;
-    setPart({ part: tmpPart, timestamp: 0 });
+    const game_id = search.get("game_id") !== null ? parseInt(search.get("game_id")) : undefined;
+    const index = vod.games.findIndex((game) => parseInt(game.id) === game_id);
+    setPart({ part: index === -1 ? 1 : index + 1, timestamp: 0 });
     return;
   }, [vod, location.search]);
 
@@ -100,7 +101,7 @@ export default function Games(props) {
                       {games.map((data, i) => {
                         return (
                           <MenuItem key={data.id} value={i}>
-                            {data.game_name}
+                            {data.title}
                           </MenuItem>
                         );
                       })}
