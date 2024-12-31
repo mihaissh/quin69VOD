@@ -11,12 +11,12 @@ dayjs.extend(localizedFormat);
 export default function Vod(props) {
   const { vod, gridSize } = props;
 
-  return vod.games.map((game, _) => {
+  return vod.games.reverse().map((game, _) => {
     const gameLink = `/games/${vod.id}?game_id=${game.id}`;
     let gameDuration = parseInt(game.end_time);
-    //Edge case when there are two parts and exceed 12 hours.
-    if (gameDuration > 43199) {
-      gameDuration -= 43199;
+    //Edge case when there are two parts and exceed 12+ hours.
+    while (gameDuration > process.env.REACT_APP_DEFAULT_DELAY) {
+      gameDuration -= process.env.REACT_APP_DEFAULT_DELAY;
     }
     return (
       <Grid key={game.id} item xs={gridSize} sx={{ maxWidth: "18rem", flexBasis: "18rem" }}>
