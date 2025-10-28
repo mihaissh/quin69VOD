@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
-import canAutoPlay from "can-autoplay";
-import Youtube from "react-youtube";
+import { Box } from "@mui/material";
+import YouTube from "react-youtube";
 
 export default function YoutubePlayer(props) {
   const { youtube, playerRef, part, setPart, setCurrentTime, delay, setPlaying } = props;
@@ -10,12 +10,15 @@ export default function YoutubePlayer(props) {
     if (!playerRef.current) return;
 
     const index = youtube.findIndex((data) => data.part === part.part);
-    playerRef.current.loadVideoById(youtube[index !== -1 ? index : part.part - 1].id, part.timestamp);
+    const videoId = youtube[index !== -1 ? index : part.part - 1].id;
+    
+    playerRef.current.loadVideoById(videoId, part.timestamp || 0);
   }, [part, playerRef, youtube]);
 
   const timeUpdate = () => {
     if (!playerRef.current) return;
     if (playerRef.current.getPlayerState() !== 1) return;
+    
     let currentTime = 0;
     for (let video of youtube) {
       if (video.part >= part.part) break;
@@ -34,15 +37,16 @@ export default function YoutubePlayer(props) {
     }, 1000);
   };
 
-  const onReady = (evt) => {
-    playerRef.current = evt.target;
+  const clearTimeUpdate = () => {
+    if (timeUpdateRef.current !== null) clearTimeout(timeUpdateRef.current);
+  };
 
-    canAutoPlay.video().then(({ result }) => {
-      if (!result) playerRef.current.mute();
-    });
-
+  const onReady = (event) => {
+    playerRef.current = event.target;
+    
     const index = youtube.findIndex((data) => data.part === part.part);
-    playerRef.current.loadVideoById(youtube[index !== -1 ? index : 0].id, part.timestamp);
+    const videoId = youtube[index !== -1 ? index : 0].id;
+    playerRef.current.loadVideoById(videoId, part.timestamp || 0);
   };
 
   const onPlay = () => {
@@ -57,38 +61,60 @@ export default function YoutubePlayer(props) {
   };
 
   const onEnd = () => {
+    clearTimeUpdate();
+    setPlaying({ playing: false });
+    
     const nextPart = part.part + 1;
-    if (nextPart > youtube.length) return;
-    setPart({ part: nextPart, duration: 0 });
+    if (nextPart <= youtube.length) {
+      setPart({ part: nextPart, timestamp: 0 });
+    }
   };
 
-  const onError = (evt) => {
-    if (evt.data !== 150) console.error(evt.data);
-    //dmca error
-  };
-
-  const clearTimeUpdate = () => {
-    if (timeUpdateRef.current !== null) clearTimeout(timeUpdateRef.current);
+  const onError = (event) => {
+    if (event.data !== 150) console.error("Player error:", event.data);
   };
 
   return (
-    <Youtube
-      className="youtube-player"
-      opts={{
-        height: "100%",
+    <Box
+      sx={{
+        position: "relative",
         width: "100%",
-        playerVars: {
-          autoplay: 1,
-          playsinline: 1,
-          rel: 0,
-          modestbranding: 1,
-        },
+        height: "100%",
+        backgroundColor: "#000",
+        "& iframe": {
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%"
+        }
       }}
-      onReady={onReady}
-      onPlay={onPlay}
-      onPause={onPause}
-      onEnd={onEnd}
-      onError={onError}
-    />
+    >
+      <YouTube
+        opts={{
+          width: "100%",
+          height: "100%",
+          playerVars: {
+            autoplay: 1,
+            playsinline: 1,
+            rel: 0,
+            modestbranding: 1,
+            iv_load_policy: 3,
+            controls: 1,
+            fs: 1,
+            mute: 1,
+          },
+        }}
+        onReady={onReady}
+        onPlay={onPlay}
+        onPause={onPause}
+        onEnd={onEnd}
+        onError={onError}
+        style={{
+          height: "100%",
+          width: "100%",
+        }}
+      />
+    </Box>
   );
 }

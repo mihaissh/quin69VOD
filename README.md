@@ -1,76 +1,85 @@
-# Getting Started with Create React App
+# Quin69 VOD Archive 🎮
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern website for browsing and watching Quin69's Twitch VODs with chat replay.
 
-## Available Scripts
+![React](https://img.shields.io/badge/React-19.0.0-blue)
+![Material-UI](https://img.shields.io/badge/Material--UI-6.2.0-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-In the project directory, you can run:
+> **✨ Latest Update (Oct 2025)**: Code improvements make the site faster and easier to maintain!
 
-### `npm start`
+## ✨ Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- **📺 Browse Videos**: Search through thousands of VODs easily
+- **🔍 Smart Filters**: Find videos by date, title, or game
+- **💬 Chat Replay**: Relive the chat experience while watching
+- **🎯 Quick Navigation**: Jump to different games/sections in long streams
+- **📱 Works Everywhere**: Looks great on phones, tablets, and computers
+- **⚡ Fast Loading**: Quick and smooth performance
+- **🎨 Beautiful Design**: Modern interface with smooth animations
+- **♿ Easy to Use**: Keyboard shortcuts and screen reader friendly
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 🚀 For Developers
 
-### `npm test`
+### Getting Started
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**What you need:**
+- Node.js (version 14 or newer)
+- npm (comes with Node.js)
 
-### `npm run build`
+**Setup:**
+1. Download the code
+2. Open terminal in the project folder
+3. Run `npm install` (installs required packages)
+4. Set up your `.env` file (see below)
+5. Run `npm start` (opens the site)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+**Common Commands:**
+```bash
+npm start          # Run the site locally
+npm run build      # Create production version
+npm test           # Run tests
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## ⚙️ Configuration
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+You'll need to create a `.env` file with these settings:
 
-### `npm run eject`
+```env
+REACT_APP_CHANNEL=Quin69                    # Channel name
+REACT_APP_TWITCH_ID=your_twitch_id          # Twitch channel ID
+REACT_APP_VODS_API_BASE=https://your-api    # Where to get video data
+REACT_APP_GITHUB=https://github.com/...     # Your GitHub repo
+REACT_APP_START_DATE=2020-01-01             # Archive start date
+REACT_APP_DEFAULT_DELAY=43200               # Chat delay (12 hours)
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+**Note**: The chat replay connects to your API to show chat messages. If no chat data is available, it will show an empty chat panel.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🏗️ How It's Built
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+This site is built with modern web technologies to ensure it's fast, reliable, and easy to maintain:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- **React** - The main framework
+- **Material-UI** - Makes it look beautiful
+- **Video.js** - Plays the videos smoothly
+- **Smart Loading** - Only loads what you need, when you need it
 
-## Learn More
+**Why it's fast:**
+- Pages load quickly with smart caching
+- Search results appear as you type
+- Videos start playing without delay
+- Works smoothly even on slower connections
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🎯 Recent Updates
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### October 2025 ✨
 
-### Code Splitting
+✅ Updated to latest standards - Site runs faster  
+✅ Improved code quality - Easier to fix bugs and add features  
+✅ Better performance - Pages load quicker  
+✅ Cleaner codebase - Ready for future improvements  
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+**Bottom line**: The site now runs smoother and is easier to improve! 🚀
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-
-### Twemoji
-
-[Twemoji graphics made by Twitter and other contributors](https://twemoji.twitter.com)
-
-[Licensed under CC-BY 4.0](https://creativecommons.org/licenses/by/4.0)
+**Made with ❤️ for the Quin69 community**

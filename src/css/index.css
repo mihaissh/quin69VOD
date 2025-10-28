@@ -1,3 +1,4 @@
+/* Reset and Base Styles */
 ul {
   border: 0;
   font: inherit;
@@ -6,6 +7,7 @@ ul {
   vertical-align: baseline;
 }
 
+/* Performance optimization: will-change for animated elements */
 .background {
   background-repeat: no-repeat;
   background-size: cover;
@@ -13,6 +15,7 @@ ul {
   width: 100%;
 }
 
+/* Link styles */
 a,
 a:visited,
 a:hover,
@@ -20,6 +23,7 @@ a:active {
   text-decoration: none !important;
 }
 
+/* Optimized image rendering */
 .thumbnail {
   vertical-align: top;
   max-width: 100%;
@@ -28,20 +32,304 @@ a:active {
   left: 0;
   width: 100%;
   height: 100%;
+  object-fit: cover;
 }
 
+/* Video player container */
 .youtube-player {
   height: 100%;
   width: 100%;
+  will-change: transform; /* Performance hint for GPU acceleration */
+  position: relative;
 }
 
+.youtube-player iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* React Player Styling */
+.react-player {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.react-player__preview {
+  background-size: cover;
+  background-position: center;
+}
+
+/* VideoJS Custom Styling */
+.video-js {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  border-radius: 0;
+}
+
+.video-js .vjs-big-play-button {
+  border: none;
+  background-color: rgba(139, 92, 246, 0.9);
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
+  top: 50%;
+  left: 50%;
+  margin-top: -40px;
+  margin-left: -40px;
+  font-size: 48px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+.video-js .vjs-big-play-button:hover {
+  background-color: rgba(139, 92, 246, 1);
+  transform: scale(1.1);
+  box-shadow: 0 12px 32px rgba(139, 92, 246, 0.5);
+}
+
+.video-js .vjs-control-bar {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 50%, transparent 100%);
+  backdrop-filter: blur(8px);
+  height: 60px;
+}
+
+/* Mobile-friendly control bar */
+@media (max-width: 768px), (orientation: portrait) {
+  .video-js .vjs-control-bar {
+    height: 48px;
+    font-size: 14px;
+  }
+  
+  .video-js .vjs-big-play-button {
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    margin-top: -30px;
+    margin-left: -30px;
+    font-size: 36px;
+  }
+  
+  .video-js .vjs-button {
+    font-size: 1.2em;
+  }
+  
+  .video-js .vjs-time-control {
+    font-size: 12px;
+  }
+}
+
+.video-js .vjs-play-control {
+  font-size: 1.8em;
+}
+
+.video-js .vjs-progress-control {
+  position: absolute;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 6px;
+  transition: height 0.2s ease;
+}
+
+@media (max-width: 768px), (orientation: portrait) {
+  .video-js .vjs-progress-control {
+    bottom: 48px;
+    height: 8px;
+  }
+  
+  .video-js:hover .vjs-progress-control {
+    height: 10px;
+  }
+}
+
+.video-js:hover .vjs-progress-control {
+  height: 10px;
+}
+
+.video-js .vjs-progress-holder {
+  height: 100%;
+  margin: 0;
+}
+
+.video-js .vjs-load-progress,
+.video-js .vjs-load-progress div {
+  background-color: rgba(139, 92, 246, 0.3);
+}
+
+.video-js .vjs-play-progress {
+  background: linear-gradient(90deg, #8B5CF6 0%, #06B6D4 100%);
+}
+
+.video-js .vjs-play-progress:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -6px;
+  width: 14px;
+  height: 14px;
+  background: white;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.video-js:hover .vjs-play-progress:before {
+  opacity: 1;
+}
+
+.video-js .vjs-volume-panel {
+  transition: width 0.3s ease;
+}
+
+.video-js .vjs-slider {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+.video-js .vjs-volume-level {
+  background: linear-gradient(90deg, #8B5CF6 0%, #06B6D4 100%);
+}
+
+.video-js .vjs-button > .vjs-icon-placeholder:before {
+  line-height: 2;
+}
+
+.video-js .vjs-time-control {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Loading spinner customization */
+.video-js .vjs-loading-spinner {
+  border-color: rgba(139, 92, 246, 0.3);
+  border-top-color: #8B5CF6;
+}
+
+/* Improved focus styles for accessibility */
 *:focus {
   outline: none;
 }
 
+*:focus-visible {
+  outline: 2px solid #8B5CF6;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Emoji styles */
 .twemoji {
   height: 20px;
   width: 20px;
+  max-width: 20px;
+  max-height: 20px;
   vertical-align: middle;
   border: none;
+  display: inline-block;
 }
+
+/* Performance optimizations */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Improve text rendering */
+body {
+  text-rendering: optimizeLegibility;
+}
+
+/* GPU acceleration for transforms */
+.animated,
+[class*="MuiCard"],
+[class*="MuiButton"] {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Custom scrollbar for simplebar - Hidden */
+.simplebar-scrollbar::before {
+  background: transparent;
+  opacity: 0;
+}
+
+.simplebar-scrollbar.simplebar-visible::before {
+  opacity: 0;
+}
+
+.simplebar-track.simplebar-vertical {
+  width: 0;
+  background-color: transparent;
+}
+
+.simplebar-track.simplebar-vertical .simplebar-scrollbar::before {
+  display: none;
+}
+
+/* Hide scrollbar completely */
+.simplebar-scrollbar {
+  display: none !important;
+}
+
+.simplebar-track {
+  display: none !important;
+}
+
+/* Chat message styles */
+.chat-badges {
+  display: inline-flex;
+  gap: 0.25rem;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+.chat-badge {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  vertical-align: middle;
+}
+
+.chat-emote {
+  display: inline-block;
+  vertical-align: middle;
+  max-height: 28px;
+  max-width: 100px;
+  height: auto;
+  width: auto;
+}
+
+/* Smooth transitions for layout changes */
+.layout-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Selection color matching theme */
+::selection {
+  background-color: rgba(139, 92, 246, 0.3);
+  color: white;
+}
+
+::-moz-selection {
+  background-color: rgba(139, 92, 246, 0.3);
+  color: white;
+}
+

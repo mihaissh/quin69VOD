@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef, createRef, useCallback } from "react";
-import { Box, Typography, Tooltip, Divider, Collapse, styled, IconButton, Button, tooltipClasses } from "@mui/material";
+import { Box, Typography, Tooltip, styled, IconButton, Button, tooltipClasses, Link } from "@mui/material";
 import SimpleBar from "simplebar-react";
 import Loading from "../utils/Loading";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { collapseClasses } from "@mui/material/Collapse";
 import Twemoji from "react-twemoji";
 import Settings from "./Settings";
 import { toHHMMSS } from "../utils/helpers";
@@ -17,6 +16,9 @@ const BASE_7TV_EMOTE_CDN = "https://cdn.7tv.app/emote";
 const BASE_FFZ_EMOTE_API = "https://api.frankerfacez.com/v1";
 const BASE_BTTV_EMOTE_API = "https://api.betterttv.net/3";
 const BASE_7TV_EMOTE_API = "https://7tv.io/v3";
+
+// URL detection regex
+const URL_REGEX = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:[0-9]+)?(\/[^\s]*)?$/;
 
 let messageCount = 0;
 let badgesCount = 0;
@@ -35,8 +37,24 @@ export default function Chat(props) {
   const stoppedAtIndex = useRef(0);
   const newMessages = useRef();
   const [scrolling, setScrolling] = useState(false);
-  const [showTimestamp, setShowTimestamp] = useState(false);
+  const [showTimestamp, setShowTimestamp] = useState(() => {
+    const saved = localStorage.getItem("chatShowTimestamp");
+    return saved === "true";
+  });
+  const [alternativeBg, setAlternativeBg] = useState(() => {
+    const saved = localStorage.getItem("chatAlternativeBg");
+    return saved === "true";
+  });
   const [showModal, setShowModal] = useState(false);
+
+  // Save settings to localStorage when they change
+  useEffect(() => {
+    localStorage.setItem("chatShowTimestamp", showTimestamp);
+  }, [showTimestamp]);
+
+  useEffect(() => {
+    localStorage.setItem("chatAlternativeBg", alternativeBg);
+  }, [alternativeBg]);
 
   useEffect(() => {
     if (chatRef && chatRef.current) {
@@ -201,6 +219,7 @@ export default function Chat(props) {
 
     const time = getCurrentTime();
     let lastIndex = comments.current.length - 1;
+    const currentShownMessagesLength = shownMessages.length;
     for (let i = stoppedAtIndex.current.valueOf(); i < comments.current.length; i++) {
       if (comments.current[i].content_offset_seconds > time) {
         lastIndex = i;
@@ -477,11 +496,36 @@ export default function Chat(props) {
             }
           }
 
-          textFragments.push(
-            <Twemoji key={messageCount++} noWrapper options={{ className: "twemoji" }}>
-              <Typography variant="body1" display="inline">{`${text} `}</Typography>
-            </Twemoji>
-          );
+          // Check if text is a URL
+          if (URL_REGEX.test(text)) {
+            const url = text.startsWith('http') ? text : `https://${text}`;
+            textFragments.push(
+              <Link
+                key={messageCount++}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{
+                  color: "#8B5CF6",
+                  textDecoration: "none",
+                  display: "inline",
+                  "&:hover": {
+                    textDecoration: "underline",
+                    color: "#A78BFA"
+                  },
+                  wordBreak: "break-all"
+                }}
+              >
+                {text}{" "}
+              </Link>
+            );
+          } else {
+            textFragments.push(
+              <Twemoji key={messageCount++} noWrapper options={{ className: "twemoji" }}>
+                <Typography variant="body1" display="inline">{`${text} `}</Typography>
+              </Twemoji>
+            );
+          }
         }
       }
       return <Box sx={{ display: "inline" }}>{textFragments}</Box>;
@@ -491,18 +535,27 @@ export default function Chat(props) {
     for (let i = stoppedAtIndex.current.valueOf(); i < lastIndex; i++) {
       const comment = comments.current[i];
       if (!comment.message) continue;
+      const messageIndex = currentShownMessagesLength + messages.length;
       messages.push(
-        <Box key={comment.id} ref={createRef()} sx={{ width: "100%" }}>
-          <Box sx={{ alignItems: "flex-start", display: "flex", flexWrap: "nowrap", width: "100%", pl: 0.5, pt: 0.5, pr: 0.5 }}>
-            <Box sx={{ display: "flex", alignItems: "flex-start" }}>
+        <Box 
+          key={comment.id} 
+          ref={createRef()} 
+          sx={{ 
+            width: "100%",
+            backgroundColor: alternativeBg && messageIndex % 2 === 1 ? "rgba(255, 255, 255, 0.03)" : "transparent",
+            transition: "background-color 0.2s ease-in-out"
+          }}
+        >
+          <Box sx={{ alignItems: "flex-start", display: "flex", flexWrap: "nowrap", width: "100%", pl: 0.5, pt: 0.5, pr: 0.5, pb: 0.5 }}>
+            <Box sx={{ display: "flex", alignItems: "flex-start", width: "100%" }}>
               {showTimestamp && (
-                <Box sx={{ display: "inline", pl: 1, pr: 1 }}>
+                <Box sx={{ display: "inline", pl: 1, pr: 1, flexShrink: 0 }}>
                   <Typography variant="caption" color="textSecondary">
                     {toHHMMSS(comment.content_offset_seconds)}
                   </Typography>
                 </Box>
               )}
-              <Box sx={{ flexGrow: 1 }}>
+              <Box sx={{ flexGrow: 1, minWidth: 0 }}>
                 {comment.user_badges && transformBadges(comment.user_badges)}
                 <Box sx={{ textDecoration: "none", display: "inline" }}>
                   <span style={{ color: comment.user_color, fontWeight: 600 }}>{comment.display_name}</span>
@@ -528,7 +581,8 @@ export default function Chat(props) {
     });
     stoppedAtIndex.current = lastIndex;
     if (comments.current.length - 1 === lastIndex) fetchNextComments();
-  }, [getCurrentTime, playerRef, vodId, VODS_API_BASE, youtube, games, showTimestamp]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getCurrentTime, playerRef, vodId, VODS_API_BASE, youtube, games, showTimestamp, alternativeBg]);
 
   const loop = useCallback(() => {
     if (loopRef.current !== null) clearInterval(loopRef.current);
@@ -612,63 +666,159 @@ export default function Chat(props) {
   };
 
   return (
-    <Box sx={{ height: "100%", background: "#131314", display: "flex", flexDirection: "column", minHeight: 0 }}>
+    <Box 
+      sx={{ 
+        height: isPortrait ? (showChat ? "auto" : "48px") : "100%",
+        background: "#131314", 
+        display: "flex", 
+        flexDirection: "column", 
+        minHeight: isPortrait ? (showChat ? "300px" : "48px") : 0,
+        flex: isPortrait ? (showChat ? "1 1 auto" : "0 0 48px") : "0 0 auto",
+        width: isPortrait ? "100%" : (showChat ? "340px" : "48px"),
+        minWidth: isPortrait ? "100%" : (showChat ? "340px" : "48px"),
+        maxWidth: isPortrait ? "100%" : (showChat ? "340px" : "48px"),
+        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        overflow: "hidden",
+        position: "relative"
+      }}
+    >
       {showChat ? (
         <>
-          <Box sx={{ display: "grid", alignItems: "center", p: 1 }}>
-            {!isPortrait && (
-              <Box sx={{ justifySelf: "left", gridColumnStart: 1, gridRowStart: 1 }}>
-                <Tooltip title="Collapse">
-                  <ExpandMore expand={showChat} onClick={handleExpandClick} aria-expanded={showChat}>
-                    <ExpandMoreIcon />
-                  </ExpandMore>
-                </Tooltip>
-              </Box>
-            )}
-            <Box sx={{ justifySelf: "center", gridColumnStart: 1, gridRowStart: 1 }}>
-              <Typography variant="body1">Chat Replay</Typography>
+          {/* Chat Header */}
+          <Box 
+            sx={{ 
+              display: "grid", 
+              alignItems: "center", 
+              p: 1,
+              backgroundColor: "rgba(255, 255, 255, 0.02)",
+              borderBottom: "1px solid rgba(255, 255, 255, 0.05)"
+            }}
+          >
+            <Box sx={{ justifySelf: "left", gridColumnStart: 1, gridRowStart: 1, zIndex: 1 }}>
+              <Tooltip title="Hide Chat" placement="bottom">
+                <IconButton 
+                  onClick={handleExpandClick} 
+                  size="small"
+                  sx={{
+                    transition: "all 0.2s ease-in-out",
+                    "&:hover": {
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    }
+                  }}
+                >
+                  <ExpandMoreIcon />
+                </IconButton>
+              </Tooltip>
             </Box>
-            <Box sx={{ justifySelf: "end", gridColumnStart: 1, gridRowStart: 1 }}>
-              <IconButton title="Settings" onClick={() => setShowModal(true)} color="primary">
-                <SettingsIcon />
-              </IconButton>
+            <Box sx={{ justifySelf: "center", gridColumnStart: 1, gridRowStart: 1 }}>
+              <Typography variant="body1" fontWeight={600}>Chat Replay</Typography>
+            </Box>
+            <Box sx={{ justifySelf: "end", gridColumnStart: 1, gridRowStart: 1, zIndex: 1 }}>
+              <Tooltip title="Chat Settings" placement="bottom">
+                <IconButton 
+                  onClick={() => setShowModal(true)} 
+                  size="small"
+                  sx={{
+                    transition: "all 0.2s ease-in-out",
+                    "&:hover": {
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    }
+                  }}
+                >
+                  <SettingsIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
             </Box>
           </Box>
-          <Divider />
-          <CustomCollapse in={showChat} timeout="auto" unmountOnExit sx={{ minWidth: "340px" }}>
+
+          {/* Chat Messages */}
+          <Box sx={{ flex: 1, minHeight: 0, position: "relative", display: "flex", flexDirection: "column" }}>
             {comments.length === 0 ? (
               <Loading />
             ) : (
               <>
-                <SimpleBar scrollableNodeProps={{ ref: chatRef }} style={{ height: "100%", overflowX: "hidden" }}>
-                  <Box sx={{ display: "flex", justifyContent: "flex-end", flexDirection: "column" }}>
-                    <Box sx={{ display: "flex", flexWrap: "wrap", minHeight: 0, alignItems: "flex-end" }}>{shownMessages}</Box>
+                <SimpleBar 
+                  scrollableNodeProps={{ ref: chatRef }} 
+                  style={{ 
+                    height: "100%", 
+                    overflowX: "hidden",
+                    flex: 1
+                  }}
+                >
+                  <Box sx={{ display: "flex", justifyContent: "flex-end", flexDirection: "column", minHeight: "100%" }}>
+                    <Box sx={{ display: "flex", flexDirection: "column", minHeight: 0 }}>
+                      {shownMessages}
+                    </Box>
                   </Box>
                 </SimpleBar>
+                
+                {/* Scroll to Bottom Button */}
                 {scrolling && (
-                  <Box sx={{ position: "relative", display: "flex", justifyContent: "center" }}>
-                    <Box sx={{ background: "rgba(0,0,0,.6)", minHeight: 0, borderRadius: 1, mb: 1, bottom: 0, position: "absolute" }}>
-                      <Button size="small" onClick={scrollToBottom}>
-                        Chat Paused
-                      </Button>
-                    </Box>
+                  <Box 
+                    sx={{ 
+                      position: "absolute", 
+                      bottom: 8,
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      zIndex: 10
+                    }}
+                  >
+                    <Button 
+                      size="small" 
+                      onClick={scrollToBottom}
+                      variant="contained"
+                      sx={{
+                        background: "rgba(0, 0, 0, 0.85)",
+                        backdropFilter: "blur(8px)",
+                        borderRadius: 2,
+                        textTransform: "none",
+                        fontWeight: 600,
+                        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.5)",
+                        "&:hover": {
+                          background: "rgba(0, 0, 0, 0.95)",
+                        }
+                      }}
+                    >
+                      Resume Chat
+                    </Button>
                   </Box>
                 )}
               </>
             )}
-          </CustomCollapse>
+          </Box>
         </>
       ) : (
-        !isPortrait && (
-          <Box sx={{ position: "absolute", right: 0 }}>
-            <Tooltip title="Expand">
-              <ExpandMore expand={showChat} onClick={handleExpandClick} aria-expanded={showChat}>
-                <ExpandMoreIcon />
-              </ExpandMore>
-            </Tooltip>
-          </Box>
-        )
+        <Box 
+          sx={{ 
+            display: "flex", 
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "start",
+            height: "100%",
+            pt: 1,
+            backgroundColor: "rgba(255, 255, 255, 0.02)",
+            borderLeft: isPortrait ? "none" : "1px solid rgba(255, 255, 255, 0.05)"
+          }}
+        >
+          <Tooltip title="Show Chat" placement={isPortrait ? "top" : "left"}>
+            <IconButton 
+              onClick={handleExpandClick}
+              size="small"
+              sx={{
+                transition: "all 0.2s ease-in-out",
+                transform: isPortrait ? "rotate(90deg)" : "rotate(180deg)",
+                "&:hover": {
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                }
+              }}
+            >
+              <ExpandMoreIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
       )}
+      
+      {/* Settings Modal */}
       <Settings
         userChatDelay={userChatDelay}
         setUserChatDelay={props.setUserChatDelay}
@@ -676,30 +826,13 @@ export default function Chat(props) {
         setShowModal={setShowModal}
         showTimestamp={showTimestamp}
         setShowTimestamp={setShowTimestamp}
+        alternativeBg={alternativeBg}
+        setAlternativeBg={setAlternativeBg}
       />
     </Box>
   );
 }
 
-const CustomCollapse = styled(({ _, ...props }) => <Collapse {...props} />)({
-  [`& .${collapseClasses.wrapper}`]: {
-    height: "100%",
-  },
-});
-
-const ExpandMore = styled(({ expand, ...props }, ref) => <IconButton {...props} />)`
-  margin-left: auto;
-  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-
-  ${(props) =>
-    props.expand
-      ? `
-          transform: rotate(-90deg);
-        `
-      : `
-          transform: rotate(90deg);
-        `}
-`;
 
 const MessageTooltip = styled(({ className, ...props }) => <Tooltip {...props} PopperProps={{ disablePortal: true }} classes={{ popper: className }} />)(({ theme }) => ({
   [`& .${tooltipClasses.tooltip}`]: {

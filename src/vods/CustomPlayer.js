@@ -13,9 +13,11 @@ export default function Player(props) {
   const videoJsOptions = {
     autoplay: true,
     controls: true,
-    responsive: false,
-    fluid: false,
+    responsive: true,
+    fluid: true,
+    aspectRatio: "16:9",
     poster: vod.thumbnail_url,
+    playsinline: true,
   };
 
   const onReady = (player) => {
@@ -102,9 +104,16 @@ export default function Player(props) {
   }, [source, playerRef, timestamp, vod, setDelay]);
 
   return (
-    <Box sx={{ height: "100%", width: "100%" }}>
+    <Box sx={{ 
+      width: "100%", 
+      height: "100%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: "#000"
+    }}>
       {type === "manual" && !source && (
-        <Paper sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%", flexDirection: "column" }}>
+        <Paper sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%", width: "100%", flexDirection: "column" }}>
           {fileError && <Alert severity="error">{fileError}</Alert>}
           <Box sx={{ mt: 1 }}>
             <Button variant="contained" component="label">
@@ -114,7 +123,20 @@ export default function Player(props) {
           </Box>
         </Paper>
       )}
-      <Box style={{ visibility: !source ? "hidden" : "visible", height: "100%", width: "100%", outline: "none" }}>
+      <Box 
+        sx={{ 
+          visibility: !source ? "hidden" : "visible", 
+          width: "100%", 
+          height: "100%",
+          maxHeight: "100%",
+          display: "flex",
+          alignItems: "center",
+          "& .video-js": {
+            width: "100% !important",
+            height: "100% !important"
+          }
+        }}
+      >
         <VideoJS options={videoJsOptions} onReady={onReady} />
       </Box>
     </Box>

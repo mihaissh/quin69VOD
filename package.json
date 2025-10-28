@@ -6,6 +6,8 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@feathersjs/rest-client": "^5.0.31",
+    "@iconify-json/mdi": "^1.2.3",
+    "@iconify/react": "^6.0.2",
     "@mui/icons-material": "^6.2.0",
     "@mui/material": "^6.2.0",
     "@mui/system": "^6.2.0",
@@ -16,6 +18,7 @@
     "can-autoplay": "^3.0.2",
     "dayjs": "^1.11.13",
     "humanize-duration": "^3.32.1",
+    "lodash.debounce": "^4.0.8",
     "postcss": "^8.4.49",
     "re-resizable": "^6.10.3",
     "react": "^19.0.0",
@@ -33,9 +36,13 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "build": "cross-env react-app-rewired build && rm -rf prod/ && mv build/ prod/",
+    "build": "cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
+    "build:prod": "npm run build && node -e \"const fs=require('fs'); fs.rmSync('prod', {recursive:true, force:true}); fs.renameSync('build', 'prod');\"",
+    "build:analyze": "cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
     "test": "react-app-rewired test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint src/**/*.{js,jsx}",
+    "format": "prettier --write \"src/**/*.{js,jsx,json,css,md}\""
   },
   "eslintConfig": {
     "extends": [

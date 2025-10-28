@@ -1,9 +1,9 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { createTheme, ThemeProvider, responsiveFontSizes } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline, styled } from "@mui/material";
-import { blue } from "@mui/material/colors";
 import Loading from "./utils/Loading";
+import createAppTheme from "./theme/theme";
 
 const Vods = lazy(() => import("./vods/Vods"));
 const Navbar = lazy(() => import("./navbar/navbar"));
@@ -17,35 +17,10 @@ const channel = process.env.REACT_APP_CHANNEL,
   VODS_API_BASE = process.env.REACT_APP_VODS_API_BASE;
 
 export default function App() {
-  let darkTheme = createTheme({
-    palette: {
-      mode: "dark",
-      background: {
-        default: "#0e0e10",
-      },
-      primary: {
-        main: blue[500],
-      },
-      secondary: {
-        main: "#292828",
-      },
-    },
-    components: {
-      MuiDrawer: {
-        styleOverrides: {
-          paper: {
-            color: "white",
-            backgroundImage: "none",
-          },
-        },
-      },
-    },
-  });
-
-  darkTheme = responsiveFontSizes(darkTheme);
+  const theme = createAppTheme();
 
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>
         <Parent>

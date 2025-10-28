@@ -1,9 +1,8 @@
 import { useEffect, useState, useRef } from "react";
-import { Box, Typography, MenuItem, Tooltip, useMediaQuery, FormControl, InputLabel, Select, IconButton, Link, Collapse, Divider } from "@mui/material";
+import { Box, Typography, MenuItem, Tooltip, useMediaQuery, FormControl, InputLabel, Select, IconButton, Collapse, Divider } from "@mui/material";
 import Loading from "../utils/Loading";
 import { useLocation, useParams } from "react-router-dom";
 import YoutubePlayer from "./YoutubePlayer";
-import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import NotFound from "../utils/NotFound";
 import Chat from "./Chat";
@@ -137,8 +136,26 @@ export default function Vod(props) {
   return (
     <Box sx={{ height: "100%", width: "100%" }}>
       <Box sx={{ display: "flex", flexDirection: isPortrait ? "column" : "row", height: "100%", width: "100%" }}>
-        <Box sx={{ display: "flex", height: "100%", width: "100%", flexDirection: "column", alignItems: "flex-start", minWidth: 0, overflow: "hidden", position: "relative" }}>
-          <YoutubePlayer playerRef={playerRef} part={part} youtube={youtube} setCurrentTime={setCurrentTime} setPart={setPart} setPlaying={setPlaying} delay={delay} />
+        <Box sx={{ 
+          display: "flex", 
+          height: isPortrait ? "auto" : "100%",
+          width: "100%", 
+          flexDirection: "column", 
+          alignItems: "flex-start", 
+          minWidth: 0, 
+          overflow: "hidden", 
+          position: "relative",
+          flex: isPortrait ? "0 0 auto" : "1 1 auto"
+        }}>
+          <Box sx={{ 
+            width: "100%",
+            aspectRatio: isPortrait ? "16/9" : "auto",
+            height: isPortrait ? "auto" : "100%",
+            maxHeight: isPortrait ? "56.25vw" : "none",
+            position: "relative"
+          }}>
+            <YoutubePlayer playerRef={playerRef} part={part} youtube={youtube} setCurrentTime={setCurrentTime} setPart={setPart} setPlaying={setPlaying} delay={delay} />
+          </Box>
           <Box sx={{ position: "absolute", bottom: 0, left: "50%" }}>
             <Tooltip title={showMenu ? "Collapse" : "Expand"}>
               <ExpandMore expand={showMenu} onClick={handleExpandClick} aria-expanded={showMenu} aria-label="show menu">
@@ -147,14 +164,14 @@ export default function Vod(props) {
             </Tooltip>
           </Box>
           <Collapse in={showMenu} timeout="auto" unmountOnExit sx={{ minHeight: "auto !important", width: "100%" }}>
-            <Box sx={{ display: "flex", p: 1, alignItems: "center" }}>
+            <Box sx={{ display: "flex", p: 1, alignItems: "center", gap: 1 }}>
               {chapter && <Chapters chapters={vod.chapters} chapter={chapter} setPart={setPart} youtube={youtube} setChapter={setChapter} />}
               <CustomToolTip title={vod.title}>
-                <Typography fontWeight={550} variant="body1" noWrap={true}>{`${vod.title}`}</Typography>
+                <Typography fontWeight={550} variant="body1" noWrap={true} sx={{ flex: 1, minWidth: 0 }}>{`${vod.title}`}</Typography>
               </CustomToolTip>
-              <Box sx={{ marginLeft: "auto", display: "flex", alignItems: "center" }}>
-                <Box sx={{ ml: 0.5 }}>
-                  <FormControl variant="outlined">
+              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                {youtube.length > 1 && (
+                  <FormControl variant="outlined" size="small">
                     <InputLabel id="select-label">Part</InputLabel>
                     <Select labelId="select-label" label="Part" value={part.part - 1} onChange={handlePartChange} autoWidth>
                       {youtube.map((data, i) => {
@@ -166,23 +183,12 @@ export default function Vod(props) {
                       })}
                     </Select>
                   </FormControl>
-                </Box>
-                <Box sx={{ ml: 0.5 }}>
-                  {drive && drive[0] && (
-                    <Tooltip title={`Download Vod`}>
-                      <IconButton component={Link} href={`https://drive.google.com/u/2/open?id=${drive[0].id}`} color="primary" aria-label="Download Vod" rel="noopener noreferrer" target="_blank">
-                        <CloudDownloadIcon />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                </Box>
-                <Box sx={{ ml: 0.5 }}>
-                  <Tooltip title={`Copy Current Timestamp`}>
-                    <IconButton onClick={copyTimestamp} color="primary" aria-label="Copy Current Timestamp" rel="noopener noreferrer" target="_blank">
-                      <ContentCopyIcon />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
+                )}
+                <Tooltip title="Copy Timestamp">
+                  <IconButton onClick={copyTimestamp} color="primary" size="small" aria-label="Copy Current Timestamp">
+                    <ContentCopyIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
               </Box>
             </Box>
           </Collapse>
@@ -193,6 +199,7 @@ export default function Vod(props) {
           vodId={vodId}
           playerRef={playerRef}
           playing={playing}
+          currentTime={currentTime}
           delay={delay}
           userChatDelay={userChatDelay}
           youtube={youtube}

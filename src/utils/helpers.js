@@ -28,9 +28,9 @@ export const convertTimestamp = (timestamp) => {
  * HHMMSS/MMSS to seconds
  */
 export const toSeconds = (hms) => {
-  var p = hms.split(":"),
-    s = 0,
-    m = 1;
+  const p = hms.split(":");
+  let s = 0;
+  let m = 1;
 
   while (p.length > 0) {
     s += m * parseInt(p.pop(), 10);
@@ -44,10 +44,10 @@ export const toSeconds = (hms) => {
  * seconds to HHMMSS
  */
 export const toHHMMSS = (secs) => {
-  var sec_num = parseInt(secs, 10);
-  var hours = Math.floor(sec_num / 3600);
-  var minutes = Math.floor(sec_num / 60) % 60;
-  var seconds = sec_num % 60;
+  const sec_num = parseInt(secs, 10);
+  const hours = Math.floor(sec_num / 3600);
+  const minutes = Math.floor(sec_num / 60) % 60;
+  const seconds = sec_num % 60;
 
   return [hours, minutes, seconds]
     .map((v) => (v < 10 ? "0" + v : v))
