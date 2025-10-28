@@ -1,5 +1,5 @@
 import { memo, useState, useEffect } from "react";
-import { AppBar, Toolbar, Typography, Box, IconButton, Tooltip, Avatar, Chip, Container, Slide, useScrollTrigger } from "@mui/material";
+import { AppBar, Toolbar, Typography, Box, IconButton, Tooltip, Avatar, Chip, Container, Slide } from "@mui/material";
 import CustomLink from "../utils/CustomLink";
 import { Icon } from "@iconify/react";
 import Drawer from "./drawer";
