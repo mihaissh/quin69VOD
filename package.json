@@ -32,7 +32,11 @@
     "tinyduration": "^3.3.1",
     "video.js": "^8.21.0",
     "videojs-hotkeys": "^0.2.30",
-    "web-vitals": "^4.2.4"
+    "web-vitals": "^4.2.4",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "babel-plugin-import": "^1.13.8",
+    "customize-cra": "^1.0.0",
+    "react-app-rewired": "^2.2.1"
   },
   "scripts": {
     "start": "react-app-rewired start",
@@ -65,11 +69,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "babel-plugin-import": "^1.13.8",
-    "customize-cra": "^1.0.0",
-    "react-app-rewired": "^2.2.1"
   }
 }
