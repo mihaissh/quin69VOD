@@ -36,9 +36,9 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "build": "cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
+    "build": "react-app-rewired build",
     "build:prod": "npm run build && node -e \"const fs=require('fs'); fs.rmSync('prod', {recursive:true, force:true}); fs.renameSync('build', 'prod');\"",
-    "build:analyze": "cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
+    "build:analyze": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "lint": "eslint src/**/*.{js,jsx}",
@@ -69,7 +69,6 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "babel-plugin-import": "^1.13.8",
-    "cross-env": "^7.0.3",
     "customize-cra": "^1.0.0",
     "react-app-rewired": "^2.2.1"
   }
