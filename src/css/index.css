@@ -1,3 +1,4 @@
+/* Critical CSS - Loaded First */
 /* Reset and Base Styles */
 ul {
   border: 0;
@@ -5,6 +6,17 @@ ul {
   margin: 0;
   padding: 0;
   vertical-align: baseline;
+}
+
+/* Performance: CSS Containment */
+body {
+  contain: layout style;
+}
+
+/* Performance: Content Visibility for off-screen elements */
+.offscreen-content {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
 }
 
 /* Performance optimization: will-change for animated elements */
@@ -33,6 +45,11 @@ a:active {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* Performance optimizations */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  will-change: transform;
+  /* Note: Add loading="lazy" attribute to <img> tags in HTML */
 }
 
 /* Video player container */
