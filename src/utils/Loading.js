@@ -1,17 +1,5 @@
-import LoadingLogo from "../assets/loading.gif";
-import { Box, CircularProgress, Typography, Fade } from "@mui/material";
-import { keyframes } from "@mui/system";
-
-const pulse = keyframes`
-  0%, 100% {
-    opacity: 0.8;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.02);
-  }
-`;
+import { Box, Typography, Fade } from "@mui/material";
+import LoadingSVG from "../components/LoadingSVG";
 
 export default function Loading({ message }) {
   return (
@@ -38,27 +26,14 @@ export default function Loading({ message }) {
         >
           <Box
             sx={{
-              animation: `${pulse} 2s ease-in-out infinite`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "primary.main",
             }}
           >
-            <img 
-              alt="Loading" 
-              src={LoadingLogo} 
-              style={{ 
-                height: "auto", 
-                maxWidth: "100%", 
-                maxHeight: 150,
-                borderRadius: "8px",
-              }} 
-            />
+            <LoadingSVG size={80} />
           </Box>
-          <CircularProgress 
-            size={48} 
-            thickness={4}
-            sx={{ 
-              color: "primary.main",
-            }} 
-          />
           {message && (
             <Typography 
               variant="body2" 

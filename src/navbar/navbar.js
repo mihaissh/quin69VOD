@@ -6,6 +6,7 @@ import Drawer from "./drawer";
 import { useResponsive } from "../hooks/useMediaQueries";
 import { useTwitchStatus } from "../hooks/useTwitchStatus";
 import { useLocation } from "react-router-dom";
+import { OptimizedImage } from "../components/OptimizedImage";
 
 const socials = [
   { path: `https://reddit.com/r/quin69`, icon: <Icon icon="mdi:reddit" width={24} style={{ color: '#8B5CF6' }} /> },
@@ -93,7 +94,8 @@ export default function Navbar(props) {
   // Check if we're on a VOD page
   const isVodPage = location.pathname.startsWith('/vods/') || location.pathname.startsWith('/youtube/');
 
-  const logoUrl = `${process.env.PUBLIC_URL}/quin69.png`;
+  const logoUrlWebP = `${process.env.PUBLIC_URL}/quin69.webp`;
+  const logoUrlPng = `${process.env.PUBLIC_URL}/quin69.png`;
   const twitchUrl = `https://twitch.tv/${channel.toLowerCase()}`;
 
   return (
@@ -132,7 +134,10 @@ export default function Navbar(props) {
                     >
                       <Box sx={{ position: "relative" }}>
                         <Avatar
-                          src={logoUrl}
+                          src={logoUrlWebP}
+                          imgProps={{
+                            onError: (e) => { e.target.src = logoUrlPng; }
+                          }}
                           alt={`${channel} Profile`}
                           sx={{
                             width: { xs: 32, sm: 48, md: 56 },

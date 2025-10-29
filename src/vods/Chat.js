@@ -1,8 +1,10 @@
-import React, { useEffect, useState, useRef, createRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Box, Typography, Tooltip, styled, IconButton, Button, tooltipClasses, Link } from "@mui/material";
 import SimpleBar from "simplebar-react";
 import Loading from "../utils/Loading";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import Twemoji from "react-twemoji";
 import Settings from "./Settings";
 import { toHHMMSS } from "../utils/helpers";
@@ -26,6 +28,13 @@ let badgesCount = 0;
 export default function Chat(props) {
   const { isPortrait, vodId, playerRef, playing, VODS_API_BASE, twitchId, channel, userChatDelay, delay, youtube, part, games } = props;
   const [showChat, setShowChat] = useState(true);
+  
+  // Reset chat to visible when switching to portrait
+  useEffect(() => {
+    if (isPortrait) {
+      setShowChat(true);
+    }
+  }, [isPortrait]);
   const [shownMessages, setShownMessages] = useState([]);
   const comments = useRef([]);
   const badges = useRef();
@@ -541,7 +550,6 @@ export default function Chat(props) {
       messages.push(
         <Box 
           key={comment.id} 
-          ref={createRef()} 
           sx={{ 
             width: "100%",
             backgroundColor: alternativeBg && messageIndex % 2 === 1 ? "rgba(255, 255, 255, 0.03)" : "transparent",
@@ -648,13 +656,7 @@ export default function Chat(props) {
   useEffect(() => {
     if (!chatRef.current || shownMessages.length === 0) return;
 
-    let messageHeight = 0;
-    for (let message of newMessages.current) {
-      if (!message.ref.current) continue;
-      messageHeight += message.ref.current.scrollHeight;
-    }
-    const height = chatRef.current.scrollHeight - chatRef.current.clientHeight - chatRef.current.scrollTop - messageHeight;
-    const atBottom = height < 512;
+    const atBottom = chatRef.current.scrollHeight - chatRef.current.clientHeight - chatRef.current.scrollTop < 512;
     if (atBottom) chatRef.current.scrollTop = chatRef.current.scrollHeight;
   }, [shownMessages]);
 
@@ -668,24 +670,55 @@ export default function Chat(props) {
   };
 
   return (
-    <Box 
-      sx={{ 
-        height: isPortrait ? (showChat ? "auto" : "48px") : "100%",
-        background: "#131314", 
-        display: "flex", 
-        flexDirection: "column", 
-        minHeight: isPortrait ? (showChat ? "300px" : "48px") : 0,
-        flex: isPortrait ? (showChat ? "1 1 auto" : "0 0 48px") : "0 0 auto",
-        width: isPortrait ? "100%" : (showChat ? "340px" : "48px"),
-        minWidth: isPortrait ? "100%" : (showChat ? "340px" : "48px"),
-        maxWidth: isPortrait ? "100%" : (showChat ? "340px" : "48px"),
-        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-        overflow: "hidden",
-        position: "relative"
-      }}
-    >
-      {showChat ? (
-        <>
+    <>
+      {/* Hidden Chat - Floating Button */}
+      {!showChat && !isPortrait && (
+        <Box 
+          sx={{ 
+            position: "fixed",
+            zIndex: 1000,
+            right: 16,
+            top: 16,
+          }}
+        >
+          <Tooltip title="Show Chat" placement="left">
+            <IconButton 
+              onClick={handleExpandClick}
+              size="medium"
+              sx={{
+                transition: "all 0.2s ease-in-out",
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                backdropFilter: "blur(8px)",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
+                border: "1px solid rgba(255, 255, 255, 0.15)",
+                "&:hover": {
+                  backgroundColor: "rgba(0, 0, 0, 0.85)",
+                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.6)",
+                }
+              }}
+            >
+              <ChevronLeftIcon sx={{ color: "#fff" }} />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      )}
+      
+      {/* Chat Panel */}
+      <Box 
+        sx={{ 
+          height: isPortrait ? "auto" : "100%",
+          background: "#131314", 
+          display: showChat ? "flex" : "none",
+          flexDirection: "column", 
+          minHeight: isPortrait ? "300px" : 0,
+          flex: isPortrait ? "1 1 auto" : "0 0 auto",
+          width: isPortrait ? "100%" : "340px",
+          minWidth: isPortrait ? "100%" : "340px",
+          maxWidth: isPortrait ? "100%" : "340px",
+          overflow: "hidden",
+          position: "relative",
+        }}
+      >
           {/* Chat Header */}
           <Box 
             sx={{ 
@@ -696,22 +729,24 @@ export default function Chat(props) {
               borderBottom: "1px solid rgba(255, 255, 255, 0.05)"
             }}
           >
-            <Box sx={{ justifySelf: "left", gridColumnStart: 1, gridRowStart: 1, zIndex: 1 }}>
-              <Tooltip title="Hide Chat" placement="bottom">
-                <IconButton 
-                  onClick={handleExpandClick} 
-                  size="small"
-                  sx={{
-                    transition: "all 0.2s ease-in-out",
-                    "&:hover": {
-                      backgroundColor: "rgba(255, 255, 255, 0.1)",
-                    }
-                  }}
-                >
-                  <ExpandMoreIcon />
-                </IconButton>
-              </Tooltip>
-            </Box>
+            {!isPortrait && (
+              <Box sx={{ justifySelf: "left", gridColumnStart: 1, gridRowStart: 1, zIndex: 1 }}>
+                <Tooltip title="Hide Chat" placement="bottom">
+                  <IconButton 
+                    onClick={handleExpandClick} 
+                    size="small"
+                    sx={{
+                      transition: "all 0.2s ease-in-out",
+                      "&:hover": {
+                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      }
+                    }}
+                  >
+                    <ChevronRightIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            )}
             <Box sx={{ justifySelf: "center", gridColumnStart: 1, gridRowStart: 1 }}>
               <Typography variant="body1" fontWeight={600}>Chat Replay</Typography>
             </Box>
@@ -788,37 +823,7 @@ export default function Chat(props) {
               </>
             )}
           </Box>
-        </>
-      ) : (
-        <Box 
-          sx={{ 
-            display: "flex", 
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "start",
-            height: "100%",
-            pt: 1,
-            backgroundColor: "rgba(255, 255, 255, 0.02)",
-            borderLeft: isPortrait ? "none" : "1px solid rgba(255, 255, 255, 0.05)"
-          }}
-        >
-          <Tooltip title="Show Chat" placement={isPortrait ? "top" : "left"}>
-            <IconButton 
-              onClick={handleExpandClick}
-              size="small"
-              sx={{
-                transition: "all 0.2s ease-in-out",
-                transform: isPortrait ? "rotate(90deg)" : "rotate(180deg)",
-                "&:hover": {
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
-                }
-              }}
-            >
-              <ExpandMoreIcon />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      )}
+      </Box>
       
       {/* Settings Modal */}
       <Settings
@@ -831,7 +836,7 @@ export default function Chat(props) {
         alternativeBg={alternativeBg}
         setAlternativeBg={setAlternativeBg}
       />
-    </Box>
+    </>
   );
 }
 
