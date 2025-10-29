@@ -48,12 +48,12 @@ module.exports = function override(config, env) {
       usedExports: true, // Tree shaking
     };
 
-    // Performance hints
+    // Performance hints - set to warning to not fail builds
     config.performance = {
       ...config.performance,
       hints: 'warning',
-      maxAssetSize: 512000, // 500 KiB
-      maxEntrypointSize: 512000, // 500 KiB
+      maxAssetSize: 800000, // 800 KiB - realistic for Video.js and vendors
+      maxEntrypointSize: 1200000, // 1.2 MiB - reasonable for initial load
     };
 
     // Add compression plugin for better asset compression
