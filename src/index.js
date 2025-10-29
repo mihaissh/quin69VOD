@@ -23,7 +23,9 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
-// Register service worker for caching and offline support
+// Service worker temporarily disabled to troubleshoot chunk loading issues
+// TODO: Re-enable after fixing the module loading error
+/*
 if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
   window.addEventListener('load', () => {
     navigator.serviceWorker
@@ -39,5 +41,18 @@ if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
       .catch((error) => {
         console.error('[SW] Registration failed:', error);
       });
+  });
+}
+*/
+
+// Unregister any existing service workers
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      registrations.forEach((registration) => {
+        registration.unregister();
+        console.log('[SW] Unregistered old service worker');
+      });
+    });
   });
 }
