@@ -9,40 +9,22 @@ module.exports = function override(config, env) {
       splitChunks: {
         chunks: 'all',
         cacheGroups: {
-          // Vendor chunk for node_modules
-          vendor: {
+          // Default vendors chunk - let React Scripts handle the naming
+          defaultVendors: {
             test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            priority: 10,
-            reuseExistingChunk: true,
-          },
-          // Material-UI separate chunk (large library)
-          mui: {
-            test: /[\\/]node_modules[\\/]@mui[\\/]/,
-            name: 'mui',
-            priority: 20,
-            reuseExistingChunk: true,
-          },
-          // Video.js separate chunk
-          videojs: {
-            test: /[\\/]node_modules[\\/]video\.js[\\/]/,
-            name: 'videojs',
-            priority: 20,
+            priority: -10,
             reuseExistingChunk: true,
           },
           // Common code shared across pages
-          common: {
+          default: {
             minChunks: 2,
-            priority: 5,
+            priority: -20,
             reuseExistingChunk: true,
-            enforce: true,
           },
         },
       },
-      // Runtime chunk for better long-term caching
-      runtimeChunk: {
-        name: 'runtime',
-      },
+      // Runtime chunk - use single runtime chunk
+      runtimeChunk: 'single',
       // Use TerserPlugin for better minification
       minimize: true,
       usedExports: true, // Tree shaking
