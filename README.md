@@ -70,9 +70,11 @@ This site is built with modern web technologies to ensure it's fast, reliable, a
 - Search results appear as you type
 - Videos start playing without delay
 - Works smoothly even on slower connections
-- Service worker for offline support
+- Server-side compression (60-80% smaller files)
 - Optimized images with lazy loading
-- Code splitting for smaller bundles
+- Non-blocking font loading
+
+📖 **[Read Optimization Status →](OPTIMIZATION_STATUS.md)**
 
 📖 **[Read the full Performance Guide →](PERFORMANCE.md)**
 
