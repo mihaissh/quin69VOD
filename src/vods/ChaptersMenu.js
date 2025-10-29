@@ -6,7 +6,7 @@ export default function Chapters(props) {
   return (
     <Box sx={{ pr: 1 }}>
       <Tooltip title={game.game_name}>
-        <img alt="" src={getImage(game.chapter_image)} style={{ width: "40px", height: "53px" }} />
+        <img alt={game.game_name || "Game"} loading="lazy" decoding="async" width="40" height="53" src={getImage(game.chapter_image)} style={{ width: "40px", height: "53px" }} />
       </Tooltip>
     </Box>
   );
