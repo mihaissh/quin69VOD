@@ -9,8 +9,10 @@ import relativeTime from "dayjs/plugin/relativeTime.js";
 import { Icon } from "@iconify/react";
 dayjs.extend(relativeTime);
 
-const VodCard = memo(({ vod, game, gridSize }) => {
+const VodCard = memo(({ vod, game, gridSize, index }) => {
   const gameLink = `/games/${vod.id}?game_id=${game.id}`;
+  // Prioritize first few images for LCP
+  const isAboveFold = index < 4;
   
   const gameDuration = useMemo(() => {
     let duration = parseInt(game.end_time);
@@ -61,7 +63,9 @@ const VodCard = memo(({ vod, game, gridSize }) => {
               component="img"
               image={game.thumbnail_url}
               alt={game.title}
-              loading="lazy"
+              loading={isAboveFold ? "eager" : "lazy"}
+              fetchpriority={isAboveFold ? "high" : "auto"}
+              decoding="async"
               sx={{
                 position: "absolute",
                 top: 0,
@@ -164,14 +168,14 @@ const VodCard = memo(({ vod, game, gridSize }) => {
 VodCard.displayName = 'VodCard';
 
 export default function Vod(props) {
-  const { vod, gridSize } = props;
+  const { vod, gridSize, index = 0 } = props;
 
   const reversedGames = useMemo(() => 
     [...vod.games].reverse(), 
     [vod.games]
   );
 
-  return reversedGames.map((game) => (
-    <VodCard key={game.id} vod={vod} game={game} gridSize={gridSize} />
+  return reversedGames.map((game, gameIndex) => (
+    <VodCard key={game.id} vod={vod} game={game} gridSize={gridSize} index={index + gameIndex} />
   ));
 }

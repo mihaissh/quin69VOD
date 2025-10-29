@@ -242,8 +242,8 @@ export default function Vods() {
               container 
               spacing={3}
             >
-              {vods.map((vod) => (
-                <Vod gridSize={2.4} key={vod.id} vod={vod} isMobile={isMobile} />
+              {vods.map((vod, index) => (
+                <Vod gridSize={2.4} key={vod.id} vod={vod} isMobile={isMobile} index={index} />
               ))}
             </Grid>
           </Fade>
