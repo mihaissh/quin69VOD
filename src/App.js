@@ -32,7 +32,7 @@ export default function App() {
                 path="/"
                 element={
                   <>
-                    <Navbar channel={channel} />
+                    <Navbar channel={channel} twitchId={twitchId} />
                     <Vods channel={channel} twitchId={twitchId} VODS_API_BASE={VODS_API_BASE} />
                   </>
                 }
@@ -42,7 +42,7 @@ export default function App() {
                 path="/vods"
                 element={
                   <>
-                    <Navbar channel={channel} />
+                    <Navbar channel={channel} twitchId={twitchId} />
                     <Vods channel={channel} twitchId={twitchId} VODS_API_BASE={VODS_API_BASE} />
                   </>
                 }

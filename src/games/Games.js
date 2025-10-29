@@ -16,6 +16,7 @@ export default function Games(props) {
   const { VODS_API_BASE, channel, twitchId } = props;
   const location = useLocation();
   const isPortrait = useMediaQuery("(orientation: portrait)");
+  const isMobile = useMediaQuery("(max-width: 900px)");
   const { vodId } = useParams();
   const [vod, setVod] = useState(undefined);
   const [games, setGames] = useState(undefined);
@@ -79,14 +80,14 @@ export default function Games(props) {
 
   return (
     <Box sx={{ height: "100%", display: "flex", flexDirection: "column", backgroundColor: "#0E0E10" }}>
-      <Navbar channel={channel} twitchId={twitchId} />
+      {!isMobile && <Navbar channel={channel} twitchId={twitchId} />}
       <Box sx={{ 
         display: "flex", 
         flexDirection: isPortrait ? "column" : "row", 
         flex: 1, 
         minHeight: 0,
-        p: isPortrait ? 0 : 2,
-        gap: isPortrait ? 0 : 2,
+        p: isMobile ? 0 : 2,
+        gap: isMobile ? 0 : 2,
       }}>
         <Box sx={{ 
           display: "flex", 
@@ -98,7 +99,7 @@ export default function Games(props) {
           overflow: "hidden", 
           position: "relative",
           backgroundColor: "#000",
-          borderRadius: isPortrait ? 0 : 1,
+          borderRadius: isMobile ? 0 : 1,
         }}>
           <Box sx={{ 
             width: "100%",

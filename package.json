@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@feathersjs/rest-client": "^5.0.31",
@@ -15,13 +16,16 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^14.5.2",
+    "babel-plugin-import": "^1.13.8",
     "can-autoplay": "^3.0.2",
+    "customize-cra": "^1.0.0",
     "dayjs": "^1.11.13",
     "humanize-duration": "^3.32.1",
     "lodash.debounce": "^4.0.8",
     "postcss": "^8.4.49",
     "re-resizable": "^6.10.3",
     "react": "^19.0.0",
+    "react-app-rewired": "^2.2.1",
     "react-dom": "^19.0.0",
     "react-git-info": "^2.0.1",
     "react-router-dom": "^7.0.2",
@@ -32,19 +36,17 @@
     "tinyduration": "^3.3.1",
     "video.js": "^8.21.0",
     "videojs-hotkeys": "^0.2.30",
-    "web-vitals": "^4.2.4",
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "babel-plugin-import": "^1.13.8",
-    "customize-cra": "^1.0.0",
-    "react-app-rewired": "^2.2.1"
+    "web-vitals": "^4.2.4"
   },
   "scripts": {
     "start": "react-app-rewired start",
+    "prebuild": "node scripts/optimize-images.js",
     "build": "react-app-rewired build",
     "build:prod": "npm run build && node -e \"const fs=require('fs'); fs.rmSync('prod', {recursive:true, force:true}); fs.renameSync('build', 'prod');\"",
     "build:analyze": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
+    "optimize-images": "node scripts/optimize-images.js",
     "lint": "eslint src/**/*.{js,jsx}",
     "format": "prettier --write \"src/**/*.{js,jsx,json,css,md}\""
   },
@@ -69,5 +71,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "imagemin": "^9.0.1",
+    "imagemin-gifsicle": "^7.0.0",
+    "imagemin-pngquant": "^10.0.0",
+    "imagemin-webp": "^8.0.0",
+    "sharp": "^0.34.4"
   }
 }
