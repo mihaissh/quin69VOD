@@ -16,9 +16,11 @@ export const lazyRetry = (componentImport, retries = 3, interval = 1000) => {
               return;
             }
             
-            console.warn(
-              `Failed to load component, retrying... (${retries - attemptsLeft + 1}/${retries})`
-            );
+            if (process.env.NODE_ENV === 'development') {
+              console.warn(
+                `Failed to load component, retrying... (${retries - attemptsLeft + 1}/${retries})`
+              );
+            }
             
             setTimeout(() => {
               attemptLoad(attemptsLeft - 1);
