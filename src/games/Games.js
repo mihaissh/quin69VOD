@@ -70,8 +70,9 @@ export default function Games(props) {
   };
 
   useEffect(() => {
-    console.info(`Chat Delay: ${userChatDelay + delay} seconds`);
-    return;
+    if (process.env.NODE_ENV === 'development') {
+      console.info(`Chat Delay: ${userChatDelay + delay} seconds`);
+    }
   }, [userChatDelay]);
 
   if (vod === undefined || drive === undefined || part === undefined || delay === undefined) return <Loading />;

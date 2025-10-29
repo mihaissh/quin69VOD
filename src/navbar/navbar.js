@@ -6,7 +6,6 @@ import Drawer from "./drawer";
 import { useResponsive } from "../hooks/useMediaQueries";
 import { useTwitchStatus } from "../hooks/useTwitchStatus";
 import { useLocation } from "react-router-dom";
-import { OptimizedImage } from "../components/OptimizedImage";
 
 const socials = [
   { path: `https://reddit.com/r/quin69`, icon: <Icon icon="mdi:reddit" width={24} style={{ color: '#8B5CF6' }} /> },

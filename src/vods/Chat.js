@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Box, Typography, Tooltip, styled, IconButton, Button, tooltipClasses, Link } from "@mui/material";
 import SimpleBar from "simplebar-react";
 import Loading from "../utils/Loading";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import Twemoji from "react-twemoji";
