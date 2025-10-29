@@ -50,17 +50,16 @@ const createAppTheme = () => {
       borderRadius: 8,
     },
     typography: {
+      // Modern system font stack - zero network requests, instant rendering
       fontFamily: [
-        '-apple-system',
-        'BlinkMacSystemFont',
-        '"SF Pro Display"',
-        '"SF Pro Text"',
-        'system-ui',
-        '"Segoe UI"',
-        'Roboto',
-        '"Helvetica Neue"',
-        'Arial',
-        'sans-serif',
+        '-apple-system',           // iOS/macOS San Francisco
+        'BlinkMacSystemFont',      // macOS San Francisco
+        '"Segoe UI"',              // Windows
+        '"SF Pro Display"',        // macOS (display)
+        '"SF Pro Text"',           // macOS (text)
+        '"Helvetica Neue"',        // Fallback
+        'Arial',                   // Universal fallback
+        'sans-serif',              // System fallback
       ].join(','),
       h1: {
         fontWeight: 700,
