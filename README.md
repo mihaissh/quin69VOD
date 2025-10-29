@@ -74,10 +74,6 @@ This site is built with modern web technologies to ensure it's fast, reliable, a
 - Optimized images with lazy loading
 - Non-blocking font loading
 
-📖 **[Read Optimization Status →](OPTIMIZATION_STATUS.md)**
-
-📖 **[Read the full Performance Guide →](PERFORMANCE.md)**
-
 ## 🎯 Recent Updates
 
 ### October 2025 ✨
