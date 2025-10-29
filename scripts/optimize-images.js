@@ -89,5 +89,7 @@ async function optimizeImages() {
 
 optimizeImages().catch(err => {
   console.error('❌ Error optimizing images:', err);
-  process.exit(1);
+  console.log('⚠️  Continuing build without image optimization...');
+  // Don't exit with error code to allow build to continue
+  process.exit(0);
 });

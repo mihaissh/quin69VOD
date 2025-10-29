@@ -2,6 +2,10 @@
   "name": "quin69-site",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@emotion/react": "^11.14.0",
@@ -31,6 +35,7 @@
     "react-scripts": "5.0.1",
     "react-twemoji": "^0.6.0",
     "react-youtube": "^10.1.0",
+    "sharp": "^0.34.4",
     "simplebar-react": "^3.3.0",
     "tinyduration": "^3.3.1",
     "video.js": "^8.21.0",
@@ -70,8 +75,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "sharp": "^0.34.4"
   }
 }
