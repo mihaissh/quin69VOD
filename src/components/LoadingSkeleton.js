@@ -7,7 +7,7 @@ export const VodCardSkeleton = ({ count = 6, gridSize = 2.1 }) => {
   return (
     <Grid container spacing={2} sx={{ mt: 1, justifyContent: "center" }}>
       {Array.from({ length: count }).map((_, index) => (
-        <Grid item xs={12} sm={6} md={4} lg={gridSize} key={index}>
+        <Grid size={{ xs: 12, sm: 6, md: 4, lg: gridSize }} key={index}>
           <Box sx={{ width: "100%" }}>
             {/* Thumbnail skeleton */}
             <Skeleton

@@ -18,6 +18,11 @@ const Footer = styled((props) => (
         </Typography>
       </Box>
     </CustomLink>
+    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", my: 0.5 }}>
+      <Typography variant="caption" color="textSecondary">
+        ✨ Updated: MUI v7, React 19, and latest packages
+      </Typography>
+    </Box>
     <CustomLink href={`${process.env.REACT_APP_GITHUB}/commit/${gitInfo.commit.shortHash}`} rel="noopener noreferrer" target="_blank">
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", mb: 1 }}>
         <Typography variant="caption" color="textSecondary">

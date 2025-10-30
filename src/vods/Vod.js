@@ -29,8 +29,8 @@ const VodCard = memo(({ vod, game, gridSize, index }) => {
   );
 
   return (
-    <Grid key={game.id} item xs={12} sm={6} md={4} lg={gridSize}>
-      <CustomLink href={gameLink} sx={{ textDecoration: "none" }}>
+    <Grid key={game.id} size={{ xs: 12, sm: 6, md: 4, lg: gridSize }}>
+      <CustomLink href={gameLink} sx={{ textDecoration: "none", display: "block", height: "100%" }}>
         <Box 
           sx={{ 
             height: "100%", 
