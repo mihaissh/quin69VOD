@@ -111,13 +111,15 @@ export default function Games(props) {
           }}>
             <YoutubePlayer playerRef={playerRef} part={part} games={games} setPart={setPart} setPlaying={setPlaying} setCurrentTime={setCurrentTime} delay={delay} />
           </Box>
-          <Box sx={{ position: "absolute", bottom: 0, left: "50%" }}>
-            <Tooltip title={showMenu ? "Collapse" : "Expand"}>
-              <ExpandMore expand={showMenu} onClick={handleExpandClick} aria-expanded={showMenu} aria-label="show menu">
-                <Icon icon="mdi:chevron-down" width={24} />
-              </ExpandMore>
-            </Tooltip>
-          </Box>
+          {!showMenu && (
+            <Box sx={{ position: "absolute", bottom: 8, right: 8 }}>
+              <Tooltip title={showMenu ? "Collapse" : "Expand"}>
+                <ExpandMore expand={showMenu} onClick={handleExpandClick} aria-expanded={showMenu} aria-label="show menu">
+                  <Icon icon="mdi:chevron-down" width={24} />
+                </ExpandMore>
+              </Tooltip>
+            </Box>
+          )}
           <Collapse in={showMenu} timeout="auto" unmountOnExit sx={{ minHeight: "auto !important", width: "100%" }}>
             <Box sx={{ display: "flex", p: 1, alignItems: "center", gap: 1 }}>
               <CustomToolTip title={vod.title}>
@@ -139,6 +141,11 @@ export default function Games(props) {
                   </FormControl>
                 )}
               </Box>
+              <Tooltip title={showMenu ? "Collapse" : "Expand"}>
+                <ExpandMore expand={showMenu} onClick={handleExpandClick} aria-expanded={showMenu} aria-label="show menu">
+                  <Icon icon="mdi:chevron-down" width={24} />
+                </ExpandMore>
+              </Tooltip>
             </Box>
           </Collapse>
         </Box>

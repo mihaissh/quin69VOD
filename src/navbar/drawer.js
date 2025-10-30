@@ -3,9 +3,7 @@ import { Drawer, ListItem, List, ListItemText, IconButton, Divider, Box, Link, L
 import { Icon } from "@iconify/react";
 
 const mainLinks = [
-  { title: `Home`, path: `/`, icon: <Icon icon="mdi:home" width={24} style={{ color: '#8B5CF6' }} /> },
   { title: `Vods`, path: `/vods`, icon: <Icon icon="mdi:video" width={24} style={{ color: '#8B5CF6' }} /> },
-  { title: `Issues`, path: `${process.env.REACT_APP_GITHUB}/issues`, icon: <Icon icon="mdi:alert-circle" width={24} style={{ color: '#8B5CF6' }} /> },
 ];
 
 export default function DrawerComponent(props) {

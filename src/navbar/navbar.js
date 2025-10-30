@@ -6,21 +6,26 @@ import Drawer from "./drawer";
 import { useResponsive } from "../hooks/useMediaQueries";
 import { useTwitchStatus } from "../hooks/useTwitchStatus";
 import { useLocation } from "react-router-dom";
+import { alpha } from "@mui/material/styles";
 
 const socials = [
-  { path: `https://reddit.com/r/quin69`, icon: <Icon icon="mdi:reddit" width={24} style={{ color: '#8B5CF6' }} /> },
-  { path: `https://www.youtube.com/channel/UCGKQFbHWBL9SqYXH41ZMTkw`, icon: <Icon icon="mdi:youtube" width={24} style={{ color: '#8B5CF6' }} /> },
+  { path: `https://reddit.com/r/quin69`, icon: <Icon icon="mdi:reddit" width={24} style={{ color: '#FF4500' }} /> }, // Reddit Orange
+  { path: `https://www.youtube.com/channel/UCGKQFbHWBL9SqYXH41ZMTkw`, icon: <Icon icon="mdi:youtube" width={24} style={{ color: '#FF0000' }} /> }, // YouTube Red
   {
     path: `https://discord.gg/rats`,
-    icon: <Icon icon="mdi:discord" width={24} style={{ color: '#8B5CF6' }} />,
+    icon: <Icon icon="mdi:discord" width={24} style={{ color: '#5865F2' }} />, // Discord Blurple
   },
   {
     path: `https://twitter.com/quinrex`,
-    icon: <Icon icon="mdi:twitter" width={24} style={{ color: '#8B5CF6' }} />,
+    icon: <Icon icon="mdi:twitter" width={24} style={{ color: '#1DA1F2' }} />, // Twitter Blue
   },
   {
     path: `https://twitch.tv/quin69`,
-    icon: <Icon icon="mdi:twitch" width={24} style={{ color: '#8B5CF6' }} />,
+    icon: <Icon icon="mdi:twitch" width={24} style={{ color: '#9146FF' }} />, // Twitch Purple
+  },
+  {
+    path: `${process.env.REACT_APP_GITHUB}`,
+    icon: <Icon icon="mdi:github" width={24} style={{ color: '#ffffff' }} />, // GitHub
   },
 ];
 
@@ -112,11 +117,13 @@ export default function Navbar(props) {
             transition: "all 0.3s ease-in-out",
           }}
         >
-          <Container maxWidth="xl">
+          <Container maxWidth="xl" disableGutters>
             <Toolbar disableGutters sx={{ 
-              gap: { xs: 1, sm: 1.5, md: 2 }, 
-              py: { xs: isVodPage ? 0.75 : 0.5, sm: 1 }, 
-              minHeight: { xs: isVodPage ? 48 : 50, sm: 60, md: 72 } 
+              alignItems: "center",
+              gap: { xs: 1, sm: 1.25, md: 1.5 }, 
+              py: 0,
+              px: { xs: 1, sm: 2 },
+              minHeight: { xs: 48, sm: 56, md: 64 }
             }}>
             {/* Left Section */}
             <Box sx={{ display: "flex", alignItems: "center", gap: { xs: 0.75, sm: 1.25, md: 2 }, flex: 1 }}>
@@ -199,10 +206,7 @@ export default function Navbar(props) {
                           backgroundClip: "text",
                           lineHeight: 1.2,
                           letterSpacing: "-0.02em",
-                          transition: "all 0.2s ease",
-                          "&:hover": {
-                            letterSpacing: "0.02em",
-                          },
+                          transition: "none",
                         }}
                       >
                         {channel}
@@ -227,7 +231,7 @@ export default function Navbar(props) {
                         color: isLive ? "#ff0000" : "text.secondary",
                         border: isLive ? "1px solid rgba(255, 0, 0, 0.5)" : "1px solid rgba(128, 128, 128, 0.3)",
                         cursor: isLive ? "pointer" : "default",
-                        transition: "all 0.2s ease-in-out",
+                        transition: "none",
                         "& .MuiChip-icon": {
                           color: isLive ? "#ff0000" : "text.secondary",
                           marginLeft: { xs: "3px", sm: "4px", md: "5px" },
@@ -235,88 +239,50 @@ export default function Navbar(props) {
                         "& .MuiChip-label": {
                           padding: { xs: "0 5px", sm: "0 6px", md: "0 8px" },
                         },
-                        "&:hover": isLive ? {
-                          backgroundColor: "rgba(255, 0, 0, 0.25)",
-                          transform: "scale(1.05)",
-                          boxShadow: "0 2px 8px rgba(255, 0, 0, 0.3)",
-                        } : {},
+                        "&:hover": {},
                       }}
                     />
                   </Box>
                 </>
               )}
-            </Box>
 
-            {/* Right Section - Home, Social Icons + Issues */}
-            <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: { xs: 0.75, sm: 1.25, md: 2 } }}>
-              {/* Home Button */}
+              {/* Home Button moved after viewers/live */}
               <Tooltip title="Home" arrow>
                 <CustomLink href="/" sx={{ textDecoration: "none" }}>
                   <IconButton
                     size={isMobile ? "small" : "medium"}
-                    sx={{
-                      backgroundColor: "rgba(139, 92, 246, 0.1)",
-                      border: "1px solid rgba(139, 92, 246, 0.2)",
+                    sx={(theme) => ({
+                      backgroundColor: alpha(theme.palette.primary.main, 0.12),
+                      border: `1px solid ${alpha(theme.palette.primary.main, 0.24)}`,
                       transition: "all 0.2s ease-in-out",
                       "&:hover": {
-                        backgroundColor: "rgba(139, 92, 246, 0.2)",
-                        transform: "scale(1.1)",
-                        boxShadow: "0 4px 12px rgba(139, 92, 246, 0.3)",
+                        backgroundColor: alpha(theme.palette.primary.main, 0.2),
+                        transform: "scale(1.05)",
                       },
-                    }}
+                    })}
+                    aria-label="Home"
                   >
-                    <Icon icon="mdi:home" width={isMobile ? 20 : 24} style={{ color: '#8B5CF6' }} />
+                    <Icon icon="mdi:home" width={isMobile ? 20 : 24} style={{ color: 'currentColor' }} />
                   </IconButton>
                 </CustomLink>
               </Tooltip>
+            </Box>
 
+            {/* Right Section - Social Icons */}
+            <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: { xs: 0.75, sm: 1.25, md: 2 } }}>
+              {/* Socials (no pill styling) */}
               {!showCompactNav && (
-                <Box sx={{ 
-                  display: "flex", 
-                  gap: 0.5,
-                  p: 0.5,
-                  borderRadius: 2,
-                  backgroundColor: "rgba(255, 255, 255, 0.03)",
-                  border: "1px solid rgba(255, 255, 255, 0.05)",
-                }}>
+                <Box sx={{ display: "flex", gap: 0.5 }}>
                   <SocialIcon path={socials[0].path} icon={socials[0].icon} label="Reddit" />
                   <SocialIcon path={socials[1].path} icon={socials[1].icon} label="YouTube" />
                   <SocialIcon path={socials[2].path} icon={socials[2].icon} label="Discord" />
                   <SocialIcon path={socials[3].path} icon={socials[3].icon} label="Twitter" />
                   <SocialIcon path={socials[4].path} icon={socials[4].icon} label="Twitch" />
+                  <SocialIcon path={socials[5].path} icon={socials[5].icon} label="GitHub" />
                 </Box>
               )}
               
-              {!showCompactNav && (
-                <CustomLink 
-                  href={`${process.env.REACT_APP_GITHUB}/issues`} 
-                  rel="noopener noreferrer" 
-                  target="_blank"
-                  sx={{ textDecoration: "none" }}
-                >
-                  <Box sx={{ 
-                    display: "flex", 
-                    alignItems: "center", 
-                    gap: 1,
-                    py: 1,
-                    px: 2,
-                    borderRadius: 2,
-                    backgroundColor: "rgba(139, 92, 246, 0.1)",
-                    border: "1px solid rgba(139, 92, 246, 0.2)",
-                    transition: "all 0.2s ease-in-out",
-                    "&:hover": {
-                      backgroundColor: "rgba(139, 92, 246, 0.2)",
-                      transform: "translateY(-2px)",
-                      boxShadow: "0 4px 12px rgba(139, 92, 246, 0.3)",
-                    },
-                  }}>
-                    <Icon icon="mdi:alert-circle" width={20} style={{ color: '#8B5CF6' }} />
-                    <Typography color="primary" variant="body2" sx={{ fontWeight: 600 }}>
-                      Report Issue
-                    </Typography>
-                  </Box>
-                </CustomLink>
-              )}
+              {/* Removed separate GitHub Issues button; GitHub is now in socials */}
             </Box>
           </Toolbar>
         </Container>

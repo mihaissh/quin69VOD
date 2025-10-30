@@ -1,3 +1,33 @@
+/* Theme variables */
+:root {
+  /* Core background and gray (Tailwind zinc) */
+  --zinc-950: #09090b;
+  --zinc-900: #18181b; /* also <meta name="theme-color"> */
+  --zinc-800: #27272a;
+  --zinc-700: #3f3f46; /* rgba(...) overlays in App.css are based on this */
+  --zinc-400: #a1a1aa;
+  --zinc-300: #d4d4d8;
+  --zinc-200: #e4e4e7;
+  --zinc-100: #f4f4f5;
+  --zinc-50:  #fafafa;
+
+  /* Accents */
+  --emerald-300: #6ee7b7;
+  --emerald-400: #34d399;
+  --emerald-500: #10b981;
+  --emerald-700: #047857;
+  --emerald-900: #064e3b;
+  --cyan-500:    #06b6d4;
+  --blue-500:    #3b82f6;
+  --neutral-800: #262626;
+  --green-600:   #16a34a;
+  --rose-500:    #f43f5e;
+  --red-400:     #f87171;
+
+  /* Convenience alias for PWA/browser UI */
+  --meta-theme-color: #18181b;
+}
+
 /* Critical CSS - Loaded First */
 /* Reset and Base Styles */
 ul {
@@ -332,6 +362,15 @@ body {
   max-width: 100px;
   height: auto;
   width: auto;
+}
+
+/* Alternating chat backgrounds based on DOM order (fixes parity drift) */
+.chat-list[data-alt-bg="true"] > .chat-message:nth-of-type(even) {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.chat-list[data-alt-bg="true"] > .chat-message:nth-of-type(even) {
+  transition: background-color 0.2s ease-in-out;
 }
 
 /* Smooth transitions for layout changes */
