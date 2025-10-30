@@ -2,12 +2,10 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Box, Typography, Tooltip, styled, IconButton, Button, tooltipClasses, Link } from "@mui/material";
 import SimpleBar from "simplebar-react";
 import Loading from "../utils/Loading";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import Twemoji from "react-twemoji";
 import Settings from "./Settings";
 import { toHHMMSS } from "../utils/helpers";
-import SettingsIcon from "@mui/icons-material/Settings";
+import { Icon } from "@iconify/react";
 
 const BASE_TWITCH_CDN = "https://static-cdn.jtvnw.net";
 const BASE_FFZ_EMOTE_CDN = "https://cdn.frankerfacez.com/emote";
@@ -743,7 +741,7 @@ export default function Chat(props) {
                 }
               }}
             >
-              <ChevronLeftIcon sx={{ color: "#fff" }} />
+              <Icon icon="mdi:chevron-left" width={22} style={{ color: "#fff" }} />
             </IconButton>
           </Tooltip>
         </Box>
@@ -788,7 +786,7 @@ export default function Chat(props) {
                       }
                     }}
                   >
-                    <ChevronRightIcon />
+                    <Icon icon="mdi:chevron-right" width={20} />
                   </IconButton>
                 </Tooltip>
               </Box>
@@ -808,7 +806,7 @@ export default function Chat(props) {
                     }
                   }}
                 >
-                  <SettingsIcon fontSize="small" />
+                  <Icon icon="mdi:cog" width={18} />
                 </IconButton>
               </Tooltip>
             </Box>

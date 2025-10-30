@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { Box, Typography, Tooltip, useMediaQuery, Collapse, Divider } from "@mui/material";
 import Loading from "../utils/Loading";
 import { useLocation, useParams } from "react-router-dom";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Icon } from "@iconify/react";
 import CustomPlayer from "./CustomPlayer";
 import Chat from "./Chat";
 import Chapters from "./VodChapters";
@@ -106,7 +106,7 @@ export default function Vod(props) {
             <Box sx={{ position: "absolute", bottom: 8, right: 8 }}>
               <Tooltip title={showMenu ? "Collapse" : "Expand"}>
                 <ExpandMore expand={showMenu} onClick={handleExpandClick} aria-expanded={showMenu} aria-label="show menu">
-                  <ExpandMoreIcon />
+                  <Icon icon="mdi:chevron-down" width={22} />
                 </ExpandMore>
               </Tooltip>
             </Box>
@@ -119,7 +119,7 @@ export default function Vod(props) {
               </CustomWidthTooltip>
               <Tooltip title={showMenu ? "Collapse" : "Expand"}>
                 <ExpandMore expand={showMenu} onClick={handleExpandClick} aria-expanded={showMenu} aria-label="show menu">
-                  <ExpandMoreIcon />
+                  <Icon icon="mdi:chevron-down" width={22} />
                 </ExpandMore>
               </Tooltip>
             </Box>

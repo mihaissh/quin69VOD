@@ -66,6 +66,8 @@ const VodCard = memo(({ vod, game, gridSize, index }) => {
               loading={isAboveFold ? "eager" : "lazy"}
               fetchpriority={isAboveFold ? "high" : "auto"}
               decoding="async"
+              draggable={false}
+              sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw"
               sx={{
                 position: "absolute",
                 top: 0,

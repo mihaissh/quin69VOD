@@ -3,14 +3,14 @@ import { Box, Typography, MenuItem, Tooltip, useMediaQuery, FormControl, InputLa
 import Loading from "../utils/Loading";
 import { useLocation, useParams } from "react-router-dom";
 import YoutubePlayer from "./YoutubePlayer";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Icon } from "@iconify/react";
 import NotFound from "../utils/NotFound";
 import Chat from "./Chat";
 import Chapters from "./VodChapters";
 import ExpandMore from "../utils/CustomExpandMore";
 import CustomToolTip from "../utils/CustomToolTip";
 import { parse } from "tinyduration";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import ContentCopyIcon from "@iconify/icons-mdi/content-copy";
 import { toHMS, toSeconds } from "../utils/helpers";
 
 export default function Vod(props) {
@@ -160,7 +160,7 @@ export default function Vod(props) {
             <Box sx={{ position: "absolute", bottom: 8, right: 8 }}>
               <Tooltip title={showMenu ? "Collapse" : "Expand"}>
                 <ExpandMore expand={showMenu} onClick={handleExpandClick} aria-expanded={showMenu} aria-label="show menu">
-                  <ExpandMoreIcon />
+                  <Icon icon="mdi:chevron-down" width={22} />
                 </ExpandMore>
               </Tooltip>
             </Box>
@@ -188,13 +188,13 @@ export default function Vod(props) {
                 )}
                 <Tooltip title="Copy Timestamp">
                   <IconButton onClick={copyTimestamp} color="primary" size="small" aria-label="Copy Current Timestamp">
-                    <ContentCopyIcon fontSize="small" />
+                    <Icon icon={ContentCopyIcon} width={18} />
                   </IconButton>
                 </Tooltip>
               </Box>
               <Tooltip title={showMenu ? "Collapse" : "Expand"}>
                 <ExpandMore expand={showMenu} onClick={handleExpandClick} aria-expanded={showMenu} aria-label="show menu">
-                  <ExpandMoreIcon />
+                  <Icon icon="mdi:chevron-down" width={22} />
                 </ExpandMore>
               </Tooltip>
             </Box>
