@@ -262,7 +262,6 @@ export default function Navbar(props) {
                   }}
                 />
               </Box>
-
               {/* Home Button moved after viewers/live */}
               <Tooltip title="Home" arrow>
                 <CustomLink href="/" sx={{ textDecoration: "none" }}>

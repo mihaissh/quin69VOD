@@ -10,7 +10,6 @@ import ChatMessage from "./components/ChatMessage";
 const BASE_FFZ_EMOTE_API = "https://api.frankerfacez.com/v1";
 const BASE_BTTV_EMOTE_API = "https://api.betterttv.net/3";
 const BASE_7TV_EMOTE_API = "https://7tv.io/v3";
-
 export default function Chat(props) {
   const { isPortrait, vodId, playerRef, playing, VODS_API_BASE, twitchId, userChatDelay, delay, youtube, part, games } = props;
   const [showChat, setShowChat] = useState(true);
