@@ -301,7 +301,6 @@ export default function Vods() {
                       color: "white",
                       border: "1px solid",
                       borderColor: "primary.light",
-                      boxShadow: "0 4px 12px rgba(139, 92, 246, 0.4), 0 0 20px rgba(139, 92, 246, 0.2)",
                     },
                     "&:hover": {
                       backgroundColor: "rgba(255, 255, 255, 0.08)",

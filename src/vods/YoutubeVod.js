@@ -156,13 +156,15 @@ export default function Vod(props) {
           }}>
             <YoutubePlayer playerRef={playerRef} part={part} youtube={youtube} setCurrentTime={setCurrentTime} setPart={setPart} setPlaying={setPlaying} delay={delay} />
           </Box>
-          <Box sx={{ position: "absolute", bottom: 0, left: "50%" }}>
-            <Tooltip title={showMenu ? "Collapse" : "Expand"}>
-              <ExpandMore expand={showMenu} onClick={handleExpandClick} aria-expanded={showMenu} aria-label="show menu">
-                <ExpandMoreIcon />
-              </ExpandMore>
-            </Tooltip>
-          </Box>
+          {!showMenu && (
+            <Box sx={{ position: "absolute", bottom: 8, right: 8 }}>
+              <Tooltip title={showMenu ? "Collapse" : "Expand"}>
+                <ExpandMore expand={showMenu} onClick={handleExpandClick} aria-expanded={showMenu} aria-label="show menu">
+                  <ExpandMoreIcon />
+                </ExpandMore>
+              </Tooltip>
+            </Box>
+          )}
           <Collapse in={showMenu} timeout="auto" unmountOnExit sx={{ minHeight: "auto !important", width: "100%" }}>
             <Box sx={{ display: "flex", p: 1, alignItems: "center", gap: 1 }}>
               {chapter && <Chapters chapters={vod.chapters} chapter={chapter} setPart={setPart} youtube={youtube} setChapter={setChapter} />}
@@ -190,6 +192,11 @@ export default function Vod(props) {
                   </IconButton>
                 </Tooltip>
               </Box>
+              <Tooltip title={showMenu ? "Collapse" : "Expand"}>
+                <ExpandMore expand={showMenu} onClick={handleExpandClick} aria-expanded={showMenu} aria-label="show menu">
+                  <ExpandMoreIcon />
+                </ExpandMore>
+              </Tooltip>
             </Box>
           </Collapse>
         </Box>

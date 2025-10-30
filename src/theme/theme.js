@@ -1,42 +1,37 @@
 import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 import { grey } from "@mui/material/colors";
+import themeColors from "./colors";
 
-// Modern 2025 color palette - inspired by contemporary design trends
+// Theme palette derived from CSS variables map (Tailwind zinc + accents)
 const colors = {
   primary: {
-    main: "#8B5CF6", // Modern purple
-    light: "#A78BFA",
-    dark: "#7C3AED",
-    gradient: `linear-gradient(135deg, #8B5CF6 0%, #06B6D4 100%)`, // Purple to teal gradient
+    main: themeColors.emerald[500],
+    light: themeColors.emerald[400],
+    dark: themeColors.emerald[700],
+    gradient: `linear-gradient(135deg, ${themeColors.emerald[500]} 0%, ${themeColors.cyan[500]} 100%)`,
   },
   secondary: {
-    main: "#14B8A6", // Modern teal
-    light: "#2DD4BF",
-    dark: "#0D9488",
+    main: themeColors.cyan[500],
+    light: themeColors.blue[500],
+    dark: themeColors.neutral[800],
   },
   background: {
-    default: "#0A0A0B", // Deep black with subtle warmth
-    paper: "#16161A",
-    elevated: "#1E1E24",
+    default: themeColors.zinc[900],
+    paper: themeColors.zinc[800],
+    elevated: themeColors.zinc[800],
   },
   text: {
-    primary: "#F9FAFB",
-    secondary: "#D1D5DB",
+    primary: themeColors.zinc[100],
+    secondary: themeColors.zinc[400],
     disabled: grey[600],
   },
-  success: {
-    main: "#10B981",
-  },
-  error: {
-    main: "#EF4444",
-  },
-  warning: {
-    main: "#F59E0B",
-  },
+  success: { main: themeColors.green[600] },
+  error: { main: themeColors.red[400] },
+  warning: { main: themeColors.rose[500] },
   accent: {
-    purple: "#8B5CF6",
-    teal: "#06B6D4",
-    pink: "#EC4899",
+    teal: themeColors.cyan[500],
+    blue: themeColors.blue[500],
+    emerald: themeColors.emerald[500],
   },
 };
 

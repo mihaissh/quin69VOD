@@ -1,13 +1,19 @@
 import { styled, Typography } from "@mui/material";
 import CustomLink from "./CustomLink";
-import Logo from "../assets/logo.jpg";
 
 const NotFound = styled((props) => {
   const { channel } = props;
   document.title = `Not Found - ${channel}`;
   return (
     <div {...props}>
-      <img src={Logo} alt="Logo" loading="lazy" decoding="async" style={{ height: "auto", maxWidth: "200px" }} />
+      <img 
+        src={`${process.env.PUBLIC_URL}/quin69.webp`} 
+        alt="Logo" 
+        loading="lazy" 
+        decoding="async" 
+        style={{ height: "auto", maxWidth: "200px" }}
+        onError={(e) => { e.currentTarget.src = `${process.env.PUBLIC_URL}/quin69.png`; }}
+      />
       <div style={{ display: "flex", justifyContent: "center", marginTop: "1rem" }}>
         <CustomLink href="/">
           <Typography variant="body2" color="textSecondary">

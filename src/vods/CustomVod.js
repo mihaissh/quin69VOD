@@ -102,19 +102,26 @@ export default function Vod(props) {
           }}>
             <CustomPlayer playerRef={playerRef} setCurrentTime={setCurrentTime} setPlaying={setPlaying} delay={delay} setDelay={setDelay} type={type} vod={vod} timestamp={timestamp} />
           </Box>
-          <Box sx={{ position: "absolute", bottom: 0, left: "50%" }}>
-            <Tooltip title={showMenu ? "Collapse" : "Expand"}>
-              <ExpandMore expand={showMenu} onClick={handleExpandClick} aria-expanded={showMenu} aria-label="show menu">
-                <ExpandMoreIcon />
-              </ExpandMore>
-            </Tooltip>
-          </Box>
+          {!showMenu && (
+            <Box sx={{ position: "absolute", bottom: 8, right: 8 }}>
+              <Tooltip title={showMenu ? "Collapse" : "Expand"}>
+                <ExpandMore expand={showMenu} onClick={handleExpandClick} aria-expanded={showMenu} aria-label="show menu">
+                  <ExpandMoreIcon />
+                </ExpandMore>
+              </Tooltip>
+            </Box>
+          )}
           <Collapse in={showMenu} timeout="auto" unmountOnExit sx={{ minHeight: "auto !important", width: "100%" }}>
             <Box sx={{ display: "flex", p: 1, alignItems: "center", gap: 1 }}>
               {chapter && <Chapters chapters={vod.chapters} chapter={chapter} setChapter={setChapter} setTimestamp={setTimestamp} />}
               <CustomWidthTooltip title={vod.title}>
                 <Typography fontWeight={550} variant="body1" noWrap={true} sx={{ flex: 1, minWidth: 0 }}>{`${vod.title}`}</Typography>
               </CustomWidthTooltip>
+              <Tooltip title={showMenu ? "Collapse" : "Expand"}>
+                <ExpandMore expand={showMenu} onClick={handleExpandClick} aria-expanded={showMenu} aria-label="show menu">
+                  <ExpandMoreIcon />
+                </ExpandMore>
+              </Tooltip>
             </Box>
           </Collapse>
         </Box>

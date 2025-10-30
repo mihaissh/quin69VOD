@@ -24,9 +24,50 @@ const URL_REGEX = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:[0-9]+)?(\/[^\
 let messageCount = 0;
 let badgesCount = 0;
 
+// Ensure username color is readable on dark chat background
+const CHAT_BASE_BG = "#131314";
+function hexToRgb(hex) {
+  if (!hex) return null;
+  const normalized = hex.replace("#", "");
+  const bigint = parseInt(normalized.length === 3 ? normalized.split("").map(c => c + c).join("") : normalized, 16);
+  if (Number.isNaN(bigint)) return null;
+  return {
+    r: (bigint >> 16) & 255,
+    g: (bigint >> 8) & 255,
+    b: bigint & 255,
+  };
+}
+
+function relativeLuminance({ r, g, b }) {
+  const srgb = [r, g, b].map(v => v / 255).map(v => (v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)));
+  return 0.2126 * srgb[0] + 0.7152 * srgb[1] + 0.0722 * srgb[2];
+}
+
+function contrastRatio(hexA, hexB) {
+  const rgbA = hexToRgb(hexA);
+  const rgbB = hexToRgb(hexB);
+  if (!rgbA || !rgbB) return 21; // default high contrast
+  const L1 = relativeLuminance(rgbA) + 0.05;
+  const L2 = relativeLuminance(rgbB) + 0.05;
+  return L1 > L2 ? L1 / L2 : L2 / L1;
+}
+
+function ensureAccessibleTextColor(userHex) {
+  if (!userHex || typeof userHex !== "string" || !userHex.startsWith("#")) return "#e5e7eb"; // zinc-200
+  try {
+    const ratio = contrastRatio(userHex, CHAT_BASE_BG);
+    if (ratio < 4.5) return "#e5e7eb"; // fallback to light gray for readability
+    return userHex;
+  } catch (e) {
+    return "#e5e7eb";
+  }
+}
+
 export default function Chat(props) {
   const { isPortrait, vodId, playerRef, playing, VODS_API_BASE, twitchId, channel, userChatDelay, delay, youtube, part, games } = props;
   const [showChat, setShowChat] = useState(true);
+  // Smaller threshold on mobile to avoid unintended auto-scroll
+  const BOTTOM_THRESHOLD = isPortrait ? 64 : 512;
   
   // Reset chat to visible when switching to portrait
   useEffect(() => {
@@ -42,6 +83,7 @@ export default function Chat(props) {
   const loopRef = useRef();
   const playRef = useRef();
   const chatRef = useRef();
+  const autoScrollRef = useRef(true);
   const stoppedAtIndex = useRef(0);
   const newMessages = useRef();
   const [scrolling, setScrolling] = useState(false);
@@ -69,8 +111,9 @@ export default function Chat(props) {
       const ref = chatRef.current;
       const handleScroll = (e) => {
         e.stopPropagation();
-        const atBottom = ref.scrollHeight - ref.clientHeight - ref.scrollTop < 512;
+        const atBottom = ref.scrollHeight - ref.clientHeight - ref.scrollTop < BOTTOM_THRESHOLD;
         setScrolling(!atBottom);
+        autoScrollRef.current = atBottom;
       };
 
       ref.addEventListener("scroll", handleScroll);
@@ -548,10 +591,10 @@ export default function Chat(props) {
       const messageIndex = currentShownMessagesLength + messages.length;
       messages.push(
         <Box 
-          key={comment.id} 
+          key={comment.id}
+          className="chat-message"
           sx={{ 
             width: "100%",
-            backgroundColor: alternativeBg && messageIndex % 2 === 1 ? "rgba(255, 255, 255, 0.03)" : "transparent",
             transition: "background-color 0.2s ease-in-out"
           }}
         >
@@ -567,7 +610,7 @@ export default function Chat(props) {
               <Box sx={{ flexGrow: 1, minWidth: 0 }}>
                 {comment.user_badges && transformBadges(comment.user_badges)}
                 <Box sx={{ textDecoration: "none", display: "inline" }}>
-                  <span style={{ color: comment.user_color, fontWeight: 600 }}>{comment.display_name}</span>
+                  <span style={{ color: ensureAccessibleTextColor(comment.user_color), fontWeight: 600, textShadow: "0 1px 1px rgba(0,0,0,0.8)" }}>{comment.display_name}</span>
                 </Box>
                 <Box sx={{ display: "inline" }}>
                   <span>: </span>
@@ -655,13 +698,17 @@ export default function Chat(props) {
   useEffect(() => {
     if (!chatRef.current || shownMessages.length === 0) return;
 
-    const atBottom = chatRef.current.scrollHeight - chatRef.current.clientHeight - chatRef.current.scrollTop < 512;
-    if (atBottom) chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    if (autoScrollRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    }
   }, [shownMessages]);
 
   const scrollToBottom = () => {
+    autoScrollRef.current = true;
     setScrolling(false);
-    chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    if (chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    }
   };
 
   const handleExpandClick = () => {
@@ -782,8 +829,10 @@ export default function Chat(props) {
                   }}
                 >
                   <Box sx={{ display: "flex", justifyContent: "flex-end", flexDirection: "column", minHeight: "100%" }}>
-                    <Box sx={{ display: "flex", flexDirection: "column", minHeight: 0 }}>
+                    <Box sx={{ display: "flex", flexDirection: "column", minHeight: 0, pb: 1.5 }} className="chat-list" data-alt-bg={alternativeBg ? "true" : "false"}>
                       {shownMessages}
+                      {/* spacer to avoid bottom clipping */}
+                      <Box sx={{ height: 8 }} />
                     </Box>
                   </Box>
                 </SimpleBar>
@@ -804,14 +853,15 @@ export default function Chat(props) {
                       onClick={scrollToBottom}
                       variant="contained"
                       sx={{
-                        background: "rgba(0, 0, 0, 0.85)",
-                        backdropFilter: "blur(8px)",
+                        backgroundColor: "#8B5CF6",
+                        color: "#fff",
                         borderRadius: 2,
                         textTransform: "none",
-                        fontWeight: 600,
-                        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.5)",
+                        fontWeight: 700,
+                        boxShadow: "none",
                         "&:hover": {
-                          background: "rgba(0, 0, 0, 0.95)",
+                          backgroundColor: "#7C3AED",
+                          boxShadow: "none",
                         }
                       }}
                     >
