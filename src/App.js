@@ -47,11 +47,11 @@ export default function App() {
                   </>
                 }
               />
-              <Route exact path="/vods/:vodId" element={<YoutubeVod channel={channel} twitchId={twitchId} type="vod" VODS_API_BASE={VODS_API_BASE} />} />
-              <Route exact path="/live/:vodId" element={<YoutubeVod channel={channel} twitchId={twitchId} type="live" VODS_API_BASE={VODS_API_BASE} />} />
-              <Route exact path="/youtube/:vodId" element={<YoutubeVod channel={channel} twitchId={twitchId} VODS_API_BASE={VODS_API_BASE} />} />
-              <Route exact path="/games/:vodId" element={<Games channel={channel} twitchId={twitchId} VODS_API_BASE={VODS_API_BASE} />} />
-              <Route exact path="/manual/:vodId" element={<CustomVod channel={channel} twitchId={twitchId} type="manual" VODS_API_BASE={VODS_API_BASE} />} />
+              <Route exact path="/vods/:vodId" element={<><Navbar channel={channel} twitchId={twitchId} /><YoutubeVod channel={channel} twitchId={twitchId} type="vod" VODS_API_BASE={VODS_API_BASE} /></>} />
+              <Route exact path="/live/:vodId" element={<><Navbar channel={channel} twitchId={twitchId} /><YoutubeVod channel={channel} twitchId={twitchId} type="live" VODS_API_BASE={VODS_API_BASE} /></>} />
+              <Route exact path="/youtube/:vodId" element={<><Navbar channel={channel} twitchId={twitchId} /><YoutubeVod channel={channel} twitchId={twitchId} VODS_API_BASE={VODS_API_BASE} /></>} />
+              <Route exact path="/games/:vodId" element={<><Navbar channel={channel} twitchId={twitchId} /><Games channel={channel} twitchId={twitchId} VODS_API_BASE={VODS_API_BASE} /></>} />
+              <Route exact path="/manual/:vodId" element={<><Navbar channel={channel} twitchId={twitchId} /><CustomVod channel={channel} twitchId={twitchId} type="manual" VODS_API_BASE={VODS_API_BASE} /></>} />
             </Routes>
           </Suspense>
         </Parent>

@@ -297,6 +297,7 @@ a:active {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+  
 }
 
 /* Improve text rendering */
@@ -362,6 +363,11 @@ body {
   max-width: 100px;
   height: auto;
   width: auto;
+}
+
+/* CSS containment for better performance with many messages */
+.chat-message {
+  contain: layout style paint;
 }
 
 /* Alternating chat backgrounds based on DOM order (fixes parity drift) */

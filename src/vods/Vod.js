@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from "react";
-import { Box, Typography, Grid, CardMedia, Chip, Stack } from "@mui/material";
+import { Box, Typography, Grid, CardMedia, Chip, Stack, Fade } from "@mui/material";
 import CustomLink from "../utils/CustomLink";
 import Chapters from "./ChaptersMenu";
 import CustomWidthTooltip from "../utils/CustomToolTip";
@@ -9,7 +9,9 @@ import relativeTime from "dayjs/plugin/relativeTime.js";
 import { Icon } from "@iconify/react";
 dayjs.extend(relativeTime);
 
-const VodCard = memo(({ vod, game, gridSize, index }) => {
+const EASTER_EGG_EMOTE_URL = "https://cdn.7tv.app/emote/01HAZ9VXPG0005HE0A9M4Z1YQ6/2x.avif";
+
+const VodCard = memo(({ vod, game, gridSize, index, showEasterEgg }) => {
   const gameLink = `/games/${vod.id}?game_id=${game.id}`;
   // Prioritize first few images for LCP
   const isAboveFold = index < 4;
@@ -29,8 +31,8 @@ const VodCard = memo(({ vod, game, gridSize, index }) => {
   );
 
   return (
-    <Grid key={game.id} item xs={12} sm={6} md={4} lg={gridSize}>
-      <CustomLink href={gameLink} sx={{ textDecoration: "none" }}>
+    <Grid key={game.id} size={{ xs: 12, sm: 6, md: 4, lg: gridSize }}>
+      <CustomLink href={gameLink} sx={{ textDecoration: "none", display: "block", height: "100%" }}>
         <Box 
           sx={{ 
             height: "100%", 
@@ -79,7 +81,58 @@ const VodCard = memo(({ vod, game, gridSize, index }) => {
               }}
             />
             
-            {            /* Duration Badge */}
+            {/* Easter Egg Dark Background Overlay */}
+            <Fade in={showEasterEgg} timeout={{ enter: 400, exit: 400 }}>
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "rgba(0, 0, 0, 0.7)",
+                  backdropFilter: "blur(4px)",
+                  zIndex: 1,
+                  pointerEvents: "none",
+                }}
+              />
+            </Fade>
+            
+            {/* Easter Egg Emote Overlay - Only render when active */}
+            {showEasterEgg && (
+              <Fade in={showEasterEgg} timeout={{ enter: 400, exit: 400 }}>
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: { xs: "80px", sm: "110px", md: "140px" },
+                    height: { xs: "80px", sm: "110px", md: "140px" },
+                    zIndex: 2,
+                    pointerEvents: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <img
+                    src={EASTER_EGG_EMOTE_URL}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                      filter: "drop-shadow(0 4px 8px rgba(139, 92, 246, 0.5))",
+                    }}
+                  />
+                </Box>
+              </Fade>
+            )}
+            
+            {/* Duration Badge */}
             <Chip
               icon={<Icon icon="mdi:clock-outline" width={14} />}
               label={toHHMMSS(gameDuration)}
@@ -93,6 +146,7 @@ const VodCard = memo(({ vod, game, gridSize, index }) => {
                 fontSize: "0.7rem",
                 fontWeight: 600,
                 height: 24,
+                zIndex: 10,
                 "& .MuiChip-icon": {
                   color: "#8B5CF6",
                   marginLeft: 0.5,
@@ -170,7 +224,7 @@ const VodCard = memo(({ vod, game, gridSize, index }) => {
 VodCard.displayName = 'VodCard';
 
 export default function Vod(props) {
-  const { vod, gridSize, index = 0 } = props;
+  const { vod, gridSize, index = 0, showEasterEgg = false } = props;
 
   const reversedGames = useMemo(() => 
     [...vod.games].reverse(), 
@@ -178,6 +232,6 @@ export default function Vod(props) {
   );
 
   return reversedGames.map((game, gameIndex) => (
-    <VodCard key={game.id} vod={vod} game={game} gridSize={gridSize} index={index + gameIndex} />
+    <VodCard key={game.id} vod={vod} game={game} gridSize={gridSize} index={index + gameIndex} showEasterEgg={showEasterEgg} />
   ));
 }

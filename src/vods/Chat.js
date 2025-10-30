@@ -1,68 +1,17 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { Box, Typography, Tooltip, styled, IconButton, Button, tooltipClasses, Link } from "@mui/material";
+import { Box, Tooltip, IconButton, Button } from "@mui/material";
 import SimpleBar from "simplebar-react";
 import Loading from "../utils/Loading";
-import Twemoji from "react-twemoji";
 import Settings from "./Settings";
-import { toHHMMSS } from "../utils/helpers";
 import { Icon } from "@iconify/react";
+import ChatHeader from "./components/ChatHeader";
+import ChatMessage from "./components/ChatMessage";
 
-const BASE_TWITCH_CDN = "https://static-cdn.jtvnw.net";
-const BASE_FFZ_EMOTE_CDN = "https://cdn.frankerfacez.com/emote";
-//Needs CORS for mobile devices.
-const BASE_BTTV_EMOTE_CDN = "https://emotes.overpowered.tv/bttv";
-const BASE_7TV_EMOTE_CDN = "https://cdn.7tv.app/emote";
 const BASE_FFZ_EMOTE_API = "https://api.frankerfacez.com/v1";
 const BASE_BTTV_EMOTE_API = "https://api.betterttv.net/3";
 const BASE_7TV_EMOTE_API = "https://7tv.io/v3";
-
-// URL detection regex
-const URL_REGEX = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:[0-9]+)?(\/[^\s]*)?$/;
-
-let messageCount = 0;
-let badgesCount = 0;
-
-// Ensure username color is readable on dark chat background
-const CHAT_BASE_BG = "#131314";
-function hexToRgb(hex) {
-  if (!hex) return null;
-  const normalized = hex.replace("#", "");
-  const bigint = parseInt(normalized.length === 3 ? normalized.split("").map(c => c + c).join("") : normalized, 16);
-  if (Number.isNaN(bigint)) return null;
-  return {
-    r: (bigint >> 16) & 255,
-    g: (bigint >> 8) & 255,
-    b: bigint & 255,
-  };
-}
-
-function relativeLuminance({ r, g, b }) {
-  const srgb = [r, g, b].map(v => v / 255).map(v => (v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)));
-  return 0.2126 * srgb[0] + 0.7152 * srgb[1] + 0.0722 * srgb[2];
-}
-
-function contrastRatio(hexA, hexB) {
-  const rgbA = hexToRgb(hexA);
-  const rgbB = hexToRgb(hexB);
-  if (!rgbA || !rgbB) return 21; // default high contrast
-  const L1 = relativeLuminance(rgbA) + 0.05;
-  const L2 = relativeLuminance(rgbB) + 0.05;
-  return L1 > L2 ? L1 / L2 : L2 / L1;
-}
-
-function ensureAccessibleTextColor(userHex) {
-  if (!userHex || typeof userHex !== "string" || !userHex.startsWith("#")) return "#e5e7eb"; // zinc-200
-  try {
-    const ratio = contrastRatio(userHex, CHAT_BASE_BG);
-    if (ratio < 4.5) return "#e5e7eb"; // fallback to light gray for readability
-    return userHex;
-  } catch (e) {
-    return "#e5e7eb";
-  }
-}
-
 export default function Chat(props) {
-  const { isPortrait, vodId, playerRef, playing, VODS_API_BASE, twitchId, channel, userChatDelay, delay, youtube, part, games } = props;
+  const { isPortrait, vodId, playerRef, playing, VODS_API_BASE, twitchId, userChatDelay, delay, youtube, part, games } = props;
   const [showChat, setShowChat] = useState(true);
   // Smaller threshold on mobile to avoid unintended auto-scroll
   const BOTTOM_THRESHOLD = isPortrait ? 64 : 512;
@@ -77,13 +26,13 @@ export default function Chat(props) {
   const comments = useRef([]);
   const badges = useRef();
   const emotes = useRef({ ffz_emotes: [], bttv_emotes: [], "7tv_emotes": [] });
+  const emotesMap = useRef({ "7tv": new Map(), bttv: new Map(), ffz: new Map() });
   const cursor = useRef();
   const loopRef = useRef();
   const playRef = useRef();
   const chatRef = useRef();
   const autoScrollRef = useRef(true);
   const stoppedAtIndex = useRef(0);
-  const newMessages = useRef();
   const [scrolling, setScrolling] = useState(false);
   const [showTimestamp, setShowTimestamp] = useState(() => {
     const saved = localStorage.getItem("chatShowTimestamp");
@@ -105,22 +54,48 @@ export default function Chat(props) {
   }, [alternativeBg]);
 
   useEffect(() => {
-    if (chatRef && chatRef.current) {
-      const ref = chatRef.current;
-      const handleScroll = (e) => {
-        e.stopPropagation();
-        const atBottom = ref.scrollHeight - ref.clientHeight - ref.scrollTop < BOTTOM_THRESHOLD;
-        setScrolling(!atBottom);
-        autoScrollRef.current = atBottom;
-      };
+    const ref = chatRef.current;
+    if (!ref) return;
+    
+    const handleScroll = (e) => {
+      e.stopPropagation();
+      const atBottom = ref.scrollHeight - ref.clientHeight - ref.scrollTop < BOTTOM_THRESHOLD;
+      setScrolling(!atBottom);
+      autoScrollRef.current = atBottom;
+    };
 
-      ref.addEventListener("scroll", handleScroll);
-
-      return () => ref.removeEventListener("scroll", handleScroll);
-    }
-  });
+    ref.addEventListener("scroll", handleScroll);
+    return () => ref.removeEventListener("scroll", handleScroll);
+  }, [BOTTOM_THRESHOLD]);
 
   useEffect(() => {
+    const buildEmotesMap = () => {
+      emotesMap.current["7tv"].clear();
+      emotesMap.current.bttv.clear();
+      emotesMap.current.ffz.clear();
+      
+      if (emotes.current["7tv_emotes"]) {
+        emotes.current["7tv_emotes"].forEach(emote => {
+          if (emote.name) emotesMap.current["7tv"].set(emote.name.toLowerCase(), emote);
+          if (emote.code) emotesMap.current["7tv"].set(emote.code.toLowerCase(), emote);
+        });
+      }
+      
+      if (emotes.current.bttv_emotes) {
+        emotes.current.bttv_emotes.forEach(emote => {
+          if (emote.name) emotesMap.current.bttv.set(emote.name.toLowerCase(), emote);
+          if (emote.code) emotesMap.current.bttv.set(emote.code.toLowerCase(), emote);
+        });
+      }
+      
+      if (emotes.current.ffz_emotes) {
+        emotes.current.ffz_emotes.forEach(emote => {
+          if (emote.name) emotesMap.current.ffz.set(emote.name.toLowerCase(), emote);
+          if (emote.code) emotesMap.current.ffz.set(emote.code.toLowerCase(), emote);
+        });
+      }
+    };
+
     const loadBadges = () => {
       fetch(`${VODS_API_BASE}/v2/badges`, {
         method: "GET",
@@ -154,6 +129,7 @@ export default function Chat(props) {
             return;
           }
           emotes.current = response.data[0];
+          buildEmotesMap();
         })
         .catch((e) => {
           console.error(e);
@@ -172,6 +148,7 @@ export default function Chat(props) {
         .then((data) => {
           if (data.status >= 400) return;
           emotes.current.bttv_emotes = data;
+          buildEmotesMap();
           loadBTTVChannelEmotes();
         })
         .catch((e) => {
@@ -187,6 +164,7 @@ export default function Chat(props) {
         .then((data) => {
           if (data.status >= 400) return;
           emotes.current.bttv_emotes = emotes.current.bttv_emotes.concat(data.sharedEmotes.concat(data.channelEmotes));
+          buildEmotesMap();
         })
         .catch((e) => {
           console.error(e);
@@ -201,6 +179,7 @@ export default function Chat(props) {
         .then((data) => {
           if (data.status >= 400) return;
           emotes.current.ffz_emotes = data.sets[data.room.set].emoticons;
+          buildEmotesMap();
         })
         .catch((e) => {
           console.error(e);
@@ -215,6 +194,7 @@ export default function Chat(props) {
         .then((data) => {
           if (data.status_code >= 400) return;
           emotes.current["7tv_emotes"] = data.emote_set.emotes;
+          buildEmotesMap();
         })
         .catch((e) => {
           console.error(e);
@@ -231,6 +211,7 @@ export default function Chat(props) {
         .then((response) => response.json())
         .then((data) => {
           emotes.current["7tv_emotes"] = emotes.current["7tv_emotes"].concat(data.emotes);
+          buildEmotesMap();
         })
         .catch((e) => {
           console.error(e);
@@ -239,7 +220,7 @@ export default function Chat(props) {
 
     loadEmotes();
     loadBadges();
-  }, [vodId, VODS_API_BASE, twitchId, channel]);
+  }, [vodId, VODS_API_BASE, twitchId]);
 
   const getCurrentTime = useCallback(() => {
     if (!playerRef.current) return 0;
@@ -268,8 +249,7 @@ export default function Chat(props) {
 
     const time = getCurrentTime();
     let lastIndex = comments.current.length - 1;
-    const currentShownMessagesLength = shownMessages.length;
-    for (let i = stoppedAtIndex.current.valueOf(); i < comments.current.length; i++) {
+    for (let i = stoppedAtIndex.current; i < comments.current.length; i++) {
       if (comments.current[i].content_offset_seconds > time) {
         lastIndex = i;
         break;
@@ -296,332 +276,21 @@ export default function Chat(props) {
         });
     };
 
-    const transformBadges = (textBadges) => {
-      const badgeWrapper = [];
-      if (!badges.current) return;
-      const channelBadges = badges.current.channel;
-      const globalBadges = badges.current.global;
-
-      for (const textBadge of textBadges) {
-        const badgeId = textBadge._id ?? textBadge.setID;
-        const version = textBadge.version;
-
-        if (channelBadges) {
-          const badge = channelBadges.find((channelBadge) => channelBadge.set_id === badgeId);
-          if (badge) {
-            const badgeVersion = badge.versions.find((badgeVersion) => badgeVersion.id === version);
-            if (badgeVersion) {
-              badgeWrapper.push(
-                <MessageTooltip
-                  key={badgesCount++}
-                  title={
-                    <Box sx={{ maxWidth: "30rem", textAlign: "center" }}>
-                      <img crossOrigin="anonymous" loading="lazy" decoding="async" style={{ marginBottom: "0.3rem", border: "none", maxWidth: "100%", verticalAlign: "top" }} src={badgeVersion.image_url_4x} alt="" />
-                      <Typography display="block" variant="caption">{`${badgeId}`}</Typography>
-                    </Box>
-                  }
-                >
-                  <img
-                    crossOrigin="anonymous"
-                    loading="lazy"
-                    decoding="async"
-                    style={{ display: "inline-block", minWidth: "1rem", height: "1rem", margin: "0 .2rem .1rem 0", backgroundPosition: "50%", verticalAlign: "middle" }}
-                    srcSet={`${badgeVersion.image_url_1x} 1x, ${badgeVersion.image_url_2x} 2x, ${badgeVersion.image_url_4x} 4x`}
-                    src={badgeVersion.image_url_1x}
-                    alt=""
-                  />
-                </MessageTooltip>
-              );
-              continue;
-            }
-          }
-        }
-
-        if (globalBadges) {
-          const badge = globalBadges.find((globalBadge) => globalBadge.set_id === badgeId);
-          if (badge) {
-            const badgeVersion = badge.versions.find((badgeVersion) => badgeVersion.id === version);
-            badgeWrapper.push(
-              <MessageTooltip
-                key={badgesCount++}
-                title={
-                  <Box sx={{ maxWidth: "30rem", textAlign: "center" }}>
-                    <img crossOrigin="anonymous" style={{ marginBottom: "0.3rem", border: "none", maxWidth: "100%", verticalAlign: "top" }} src={badgeVersion.image_url_4x} alt="" />
-                    <Typography display="block" variant="caption">{`${badgeId}`}</Typography>
-                  </Box>
-                }
-              >
-                <img
-                  crossOrigin="anonymous"
-                  style={{ display: "inline-block", minWidth: "1rem", height: "1rem", margin: "0 .2rem .1rem 0", backgroundPosition: "50%", verticalAlign: "middle" }}
-                  srcSet={`${badgeVersion.image_url_1x} 1x, ${badgeVersion.image_url_2x} 2x, ${badgeVersion.image_url_4x} 4x`}
-                  src={badgeVersion.image_url_1x}
-                  alt=""
-                />
-              </MessageTooltip>
-            );
-            continue;
-          }
-        }
-      }
-
-      return <Box sx={{ display: "inline" }}>{badgeWrapper}</Box>;
-    };
-
-    const transformMessage = (fragments) => {
-      if (!fragments) return;
-
-      const textFragments = [];
-      for (let i = 0; i < fragments.length; i++) {
-        const fragment = fragments[i];
-        if (fragment.emote) {
-          textFragments.push(
-            <MessageTooltip
-              key={messageCount++}
-              title={
-                <Box sx={{ maxWidth: "30rem", textAlign: "center" }}>
-                  <img
-                    crossOrigin="anonymous"
-                    style={{ marginBottom: "0.3rem", border: "none", maxWidth: "100%", verticalAlign: "top" }}
-                    src={`${BASE_TWITCH_CDN}/emoticons/v2/${fragment.emote.emoteID}/default/dark/3.0`}
-                    alt=""
-                  />
-                  <Typography display="block" variant="caption">{`Emote: ${fragment.text}`}</Typography>
-                  <Typography display="block" variant="caption">
-                    {`Twitch Emotes`}
-                  </Typography>
-                </Box>
-              }
-            >
-              <Box sx={{ display: "inline" }}>
-                <img
-                  crossOrigin="anonymous"
-                  style={{ verticalAlign: "middle", border: "none", maxWidth: "100%" }}
-                  src={`${BASE_TWITCH_CDN}/emoticons/v2/${fragment.emote.emoteID}/default/dark/1.0`}
-                  srcSet={`${BASE_TWITCH_CDN}/emoticons/v2/${fragment.emote.emoteID}/default/dark/1.0 1x, ${BASE_TWITCH_CDN}/emoticons/v2/${fragment.emote.emoteID}/default/dark/2.0 2x, ${BASE_TWITCH_CDN}/emoticons/v2/${fragment.emote.emoteID}/default/dark/3.0 4x`}
-                  alt=""
-                />{" "}
-              </Box>
-            </MessageTooltip>
-          );
-          continue;
-        }
-
-        if (fragment.emoticon) {
-          textFragments.push(
-            <MessageTooltip
-              key={messageCount++}
-              title={
-                <Box sx={{ maxWidth: "30rem", textAlign: "center" }}>
-                  <img
-                    crossOrigin="anonymous"
-                    style={{ marginBottom: "0.3rem", border: "none", maxWidth: "100%", verticalAlign: "top" }}
-                    src={`${BASE_TWITCH_CDN}/emoticons/v2/${fragment.emoticon.emoticon_id}/default/dark/3.0`}
-                    alt=""
-                  />
-                  <Typography display="block" variant="caption">{`Emote: ${fragment.text}`}</Typography>
-                  <Typography display="block" variant="caption">
-                    {`Twitch Emotes`}
-                  </Typography>
-                </Box>
-              }
-            >
-              <Box sx={{ display: "inline" }}>
-                <img
-                  crossOrigin="anonymous"
-                  style={{ verticalAlign: "middle", border: "none", maxWidth: "100%" }}
-                  src={`${BASE_TWITCH_CDN}/emoticons/v2/${fragment.emoticon.emoticon_id}/default/dark/1.0`}
-                  srcSet={`${BASE_TWITCH_CDN}/emoticons/v2/${fragment.emoticon.emoticon_id}/default/dark/1.0 1x, ${BASE_TWITCH_CDN}/emoticons/v2/${fragment.emoticon.emoticon_id}/default/dark/2.0 2x, ${BASE_TWITCH_CDN}/emoticons/v2/${fragment.emoticon.emoticon_id}/default/dark/3.0 4x`}
-                  alt=""
-                />{" "}
-              </Box>
-            </MessageTooltip>
-          );
-          continue;
-        }
-
-        let textArray = fragment.text.split(" ");
-
-        for (let text of textArray) {
-          if (emotes.current) {
-            const SEVENTV_EMOTES = emotes.current["7tv_emotes"];
-            const BTTV_EMOTES = emotes.current["bttv_emotes"];
-            const FFZ_EMOTES = emotes.current["ffz_emotes"];
-
-            if (SEVENTV_EMOTES) {
-              const emote = SEVENTV_EMOTES.find((SEVENTV_EMOTE) => SEVENTV_EMOTE.name === text || SEVENTV_EMOTE.code === text);
-              if (emote) {
-                textFragments.push(
-                  <MessageTooltip
-                    key={messageCount++}
-                    title={
-                      <Box sx={{ maxWidth: "30rem", textAlign: "center" }}>
-                        <img
-                          crossOrigin="anonymous"
-                          style={{ marginBottom: "0.3rem", border: "none", maxWidth: "100%", verticalAlign: "top" }}
-                          src={`${BASE_7TV_EMOTE_CDN}/${emote.id}/4x.webp`}
-                          alt=""
-                        />
-                        <Typography display="block" variant="caption">{`Emote: ${emote.name || emote.code}`}</Typography>
-                        <Typography display="block" variant="caption">
-                          7TV Emotes
-                        </Typography>
-                      </Box>
-                    }
-                  >
-                    <Box sx={{ display: "inline" }}>
-                      <img
-                        crossOrigin="anonymous"
-                        style={{ verticalAlign: "middle", border: "none", maxWidth: "100%" }}
-                        src={`${BASE_7TV_EMOTE_CDN}/${emote.id}/1x.webp`}
-                        srcSet={`${BASE_7TV_EMOTE_CDN}/${emote.id}/1x.webp 1x, ${BASE_7TV_EMOTE_CDN}/${emote.id}/2x.webp 2x, ${BASE_7TV_EMOTE_CDN}/${emote.id}/3x.webp 3x, ${BASE_7TV_EMOTE_CDN}/${emote.id}/4x.webp 4x`}
-                        alt=""
-                      />{" "}
-                    </Box>
-                  </MessageTooltip>
-                );
-                continue;
-              }
-            }
-
-            if (FFZ_EMOTES) {
-              const emote = FFZ_EMOTES.find((FFZ_EMOTE) => FFZ_EMOTE.name === text || FFZ_EMOTE.code === text);
-              if (emote) {
-                textFragments.push(
-                  <MessageTooltip
-                    key={messageCount++}
-                    title={
-                      <Box sx={{ maxWidth: "30rem", textAlign: "center" }}>
-                        <img crossOrigin="anonymous" loading="lazy" decoding="async" style={{ marginBottom: "0.3rem", border: "none", maxWidth: "100%", verticalAlign: "top" }} src={`${BASE_FFZ_EMOTE_CDN}/${emote.id}/4`} alt="" />
-                        <Typography display="block" variant="caption">{`Emote: ${emote.name || emote.code}`}</Typography>
-                        <Typography display="block" variant="caption">
-                          FFZ Emotes
-                        </Typography>
-                      </Box>
-                    }
-                  >
-                    <Box key={messageCount++} style={{ display: "inline" }}>
-                      <img
-                        crossOrigin="anonymous"
-                        style={{ verticalAlign: "middle", border: "none", maxWidth: "100%" }}
-                        src={`${BASE_FFZ_EMOTE_CDN}/${emote.id}/1`}
-                        srcSet={`${BASE_FFZ_EMOTE_CDN}/${emote.id}/1 1x, ${BASE_FFZ_EMOTE_CDN}/${emote.id}/2 2x, ${BASE_FFZ_EMOTE_CDN}/${emote.id}/4 4x`}
-                        alt=""
-                      />{" "}
-                    </Box>
-                  </MessageTooltip>
-                );
-                continue;
-              }
-            }
-
-            if (BTTV_EMOTES) {
-              const emote = BTTV_EMOTES.find((BTTV_EMOTE) => BTTV_EMOTE.name === text || BTTV_EMOTE.code === text);
-              if (emote) {
-                textFragments.push(
-                  <MessageTooltip
-                    key={messageCount++}
-                    title={
-                      <Box sx={{ maxWidth: "30rem", textAlign: "center" }}>
-                        <img crossOrigin="anonymous" loading="lazy" decoding="async" style={{ marginBottom: "0.3rem", border: "none", maxWidth: "100%", verticalAlign: "top" }} src={`${BASE_BTTV_EMOTE_CDN}/${emote.id}/3x`} alt="" />
-                        <Typography display="block" variant="caption">{`Emote: ${emote.name || emote.code}`}</Typography>
-                        <Typography display="block" variant="caption">
-                          BTTV Emotes
-                        </Typography>
-                      </Box>
-                    }
-                  >
-                    <Box key={messageCount++} style={{ display: "inline" }}>
-                      <img
-                        crossOrigin="anonymous"
-                        style={{ verticalAlign: "middle", border: "none", maxWidth: "100%" }}
-                        src={`${BASE_BTTV_EMOTE_CDN}/${emote.id}/1x`}
-                        srcSet={`${BASE_BTTV_EMOTE_CDN}/${emote.id}/1x 1x, ${BASE_BTTV_EMOTE_CDN}/${emote.id}/2x 2x, ${BASE_BTTV_EMOTE_CDN}/${emote.id}/3x 3x`}
-                        alt=""
-                      />{" "}
-                    </Box>
-                  </MessageTooltip>
-                );
-                continue;
-              }
-            }
-          }
-
-          // Check if text is a URL
-          if (URL_REGEX.test(text)) {
-            const url = text.startsWith('http') ? text : `https://${text}`;
-            textFragments.push(
-              <Link
-                key={messageCount++}
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                sx={{
-                  color: "#8B5CF6",
-                  textDecoration: "none",
-                  display: "inline",
-                  "&:hover": {
-                    textDecoration: "underline",
-                    color: "#A78BFA"
-                  },
-                  wordBreak: "break-all"
-                }}
-              >
-                {text}{" "}
-              </Link>
-            );
-          } else {
-            textFragments.push(
-              <Twemoji key={messageCount++} noWrapper options={{ className: "twemoji" }}>
-                <Typography variant="body1" display="inline">{`${text} `}</Typography>
-              </Twemoji>
-            );
-          }
-        }
-      }
-      return <Box sx={{ display: "inline" }}>{textFragments}</Box>;
-    };
-
+    // Build messages array - memoization happens at component level for rendered messages
     const messages = [];
-    for (let i = stoppedAtIndex.current.valueOf(); i < lastIndex; i++) {
+    for (let i = stoppedAtIndex.current; i < lastIndex; i++) {
       const comment = comments.current[i];
       if (!comment.message) continue;
-      const messageIndex = currentShownMessagesLength + messages.length;
       messages.push(
-        <Box 
+        <ChatMessage
           key={comment.id}
-          className="chat-message"
-          sx={{ 
-            width: "100%",
-            transition: "background-color 0.2s ease-in-out"
-          }}
-        >
-          <Box sx={{ alignItems: "flex-start", display: "flex", flexWrap: "nowrap", width: "100%", pl: 0.5, pt: 0.5, pr: 0.5, pb: 0.5 }}>
-            <Box sx={{ display: "flex", alignItems: "flex-start", width: "100%" }}>
-              {showTimestamp && (
-                <Box sx={{ display: "inline", pl: 1, pr: 1, flexShrink: 0 }}>
-                  <Typography variant="caption" color="textSecondary">
-                    {toHHMMSS(comment.content_offset_seconds)}
-                  </Typography>
-                </Box>
-              )}
-              <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-                {comment.user_badges && transformBadges(comment.user_badges)}
-                <Box sx={{ textDecoration: "none", display: "inline" }}>
-                  <span style={{ color: ensureAccessibleTextColor(comment.user_color), fontWeight: 600, textShadow: "0 1px 1px rgba(0,0,0,0.8)" }}>{comment.display_name}</span>
-                </Box>
-                <Box sx={{ display: "inline" }}>
-                  <span>: </span>
-                  {transformMessage(comment.message)}
-                </Box>
-              </Box>
-            </Box>
-          </Box>
-        </Box>
+          comment={comment}
+          showTimestamp={showTimestamp}
+          badges={badges.current}
+          emotesMap={emotesMap.current}
+        />
       );
     }
-
-    newMessages.current = messages;
 
     setShownMessages((shownMessages) => {
       const concatMessages = shownMessages.concat(messages);
@@ -764,57 +433,15 @@ export default function Chat(props) {
         }}
       >
           {/* Chat Header */}
-          <Box 
-            sx={{ 
-              display: "grid", 
-              alignItems: "center", 
-              p: 1,
-              backgroundColor: "rgba(255, 255, 255, 0.02)",
-              borderBottom: "1px solid rgba(255, 255, 255, 0.05)"
-            }}
-          >
-            {!isPortrait && (
-              <Box sx={{ justifySelf: "left", gridColumnStart: 1, gridRowStart: 1, zIndex: 1 }}>
-                <Tooltip title="Hide Chat" placement="bottom">
-                  <IconButton 
-                    onClick={handleExpandClick} 
-                    size="small"
-                    sx={{
-                      transition: "all 0.2s ease-in-out",
-                      "&:hover": {
-                        backgroundColor: "rgba(255, 255, 255, 0.1)",
-                      }
-                    }}
-                  >
-                    <Icon icon="mdi:chevron-right" width={20} />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            )}
-            <Box sx={{ justifySelf: "center", gridColumnStart: 1, gridRowStart: 1 }}>
-              <Typography variant="body1" fontWeight={600}>Chat Replay</Typography>
-            </Box>
-            <Box sx={{ justifySelf: "end", gridColumnStart: 1, gridRowStart: 1, zIndex: 1 }}>
-              <Tooltip title="Chat Settings" placement="bottom">
-                <IconButton 
-                  onClick={() => setShowModal(true)} 
-                  size="small"
-                  sx={{
-                    transition: "all 0.2s ease-in-out",
-                    "&:hover": {
-                      backgroundColor: "rgba(255, 255, 255, 0.1)",
-                    }
-                  }}
-                >
-                  <Icon icon="mdi:cog" width={18} />
-                </IconButton>
-              </Tooltip>
-            </Box>
-          </Box>
+          <ChatHeader 
+            isPortrait={isPortrait}
+            onToggleChat={handleExpandClick}
+            onOpenSettings={() => setShowModal(true)}
+          />
 
           {/* Chat Messages */}
           <Box sx={{ flex: 1, minHeight: 0, position: "relative", display: "flex", flexDirection: "column" }}>
-            {comments.length === 0 ? (
+            {comments.current.length === 0 ? (
               <Loading />
             ) : (
               <>
@@ -888,9 +515,3 @@ export default function Chat(props) {
 }
 
 
-const MessageTooltip = styled(({ className, ...props }) => <Tooltip {...props} PopperProps={{ disablePortal: true }} classes={{ popper: className }} />)(({ theme }) => ({
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: "#fff",
-    color: "rgba(0, 0, 0, 0.87)",
-  },
-}));

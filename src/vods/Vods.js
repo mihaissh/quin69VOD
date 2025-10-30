@@ -27,6 +27,8 @@ export default function Vods() {
   const [filterEndDate, setFilterEndDate] = useState(dayjs());
   const [filterTitleInput, setFilterTitleInput] = useState("");
   const [filterGameInput, setFilterGameInput] = useState("");
+  const [titleClickCount, setTitleClickCount] = useState(0);
+  const [showEasterEgg, setShowEasterEgg] = useState(false);
   
   const page = parseInt(query.get("page") || "1", 10);
   const limit = isMobile ? 10 : 20;
@@ -66,6 +68,19 @@ export default function Vods() {
     setFilterGameInput(evt.target.value);
   }, []);
 
+  const handleTitleClick = useCallback(() => {
+    const newCount = titleClickCount + 1;
+    setTitleClickCount(newCount);
+    if (newCount >= 5) {
+      setShowEasterEgg(true);
+      setTitleClickCount(0);
+      // Auto-hide after animation completes
+      setTimeout(() => {
+        setShowEasterEgg(false);
+      }, 3000);
+    }
+  }, [titleClickCount]);
+
   const totalPages = useMemo(() => 
     totalVods ? Math.ceil(totalVods / limit) : 0,
     [totalVods, limit]
@@ -83,10 +98,11 @@ export default function Vods() {
             flexDirection: isMobile ? "column" : "row",
             gap: 2,
           }}>
-            <Box>
+            <Box sx={{ position: "relative", display: "inline-block" }}>
               {totalVods !== null && (
                 <Typography 
                   variant="h3" 
+                  onClick={handleTitleClick}
                   sx={{ 
                     fontWeight: 700,
                     fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
@@ -96,6 +112,14 @@ export default function Vods() {
                     backgroundClip: "text",
                     letterSpacing: "-0.02em",
                     mb: 0.5,
+                    cursor: "pointer",
+                    userSelect: "none",
+                    transition: "transform 0.1s ease",
+                    position: "relative",
+                    zIndex: 1,
+                    "&:active": {
+                      transform: "scale(0.98)",
+                    },
                   }}
                 >
                   VOD Archive
@@ -243,7 +267,7 @@ export default function Vods() {
               spacing={3}
             >
               {vods.map((vod, index) => (
-                <Vod gridSize={2.4} key={vod.id} vod={vod} isMobile={isMobile} index={index} />
+                <Vod gridSize={2.4} key={vod.id} vod={vod} isMobile={isMobile} index={index} showEasterEgg={showEasterEgg} />
               ))}
             </Grid>
           </Fade>
