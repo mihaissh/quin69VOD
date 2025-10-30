@@ -8,7 +8,6 @@ import NotFound from "../utils/NotFound";
 import Chat from "../vods/Chat";
 import ExpandMore from "../utils/CustomExpandMore";
 import CustomToolTip from "../utils/CustomToolTip";
-import Navbar from "../navbar/navbar";
 
 const delay = 0;
 
@@ -81,7 +80,6 @@ export default function Games(props) {
 
   return (
     <Box sx={{ height: "100%", display: "flex", flexDirection: "column", backgroundColor: "#0E0E10" }}>
-      {!isMobile && <Navbar channel={channel} twitchId={twitchId} />}
       <Box sx={{ 
         display: "flex", 
         flexDirection: isPortrait ? "column" : "row", 

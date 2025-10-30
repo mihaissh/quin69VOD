@@ -1,8 +1,5 @@
 import { styled, Typography, Box } from "@mui/material";
 import CustomLink from "./CustomLink";
-import GitInfo from "react-git-info/macro";
-
-const gitInfo = GitInfo();
 
 const Footer = styled((props) => (
   <Box {...props}>
@@ -19,17 +16,10 @@ const Footer = styled((props) => (
       </Box>
     </CustomLink>
     <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", my: 0.5 }}>
-      <Typography variant="caption" color="textSecondary">
-        ✨ Updated: MUI v7, React 19, and latest packages
+      <Typography variant="caption" color="textSecondary" sx={{ fontSize: "0.7rem" }}>
+        ✨ Updated by mihaissh
       </Typography>
     </Box>
-    <CustomLink href={`${process.env.REACT_APP_GITHUB}/commit/${gitInfo.commit.shortHash}`} rel="noopener noreferrer" target="_blank">
-      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", mb: 1 }}>
-        <Typography variant="caption" color="textSecondary">
-          {`Build Version: ${gitInfo.commit.shortHash}`}
-        </Typography>
-      </Box>
-    </CustomLink>
   </Box>
 ))`
   display: flex;
