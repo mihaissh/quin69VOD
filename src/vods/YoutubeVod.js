@@ -10,7 +10,6 @@ import Chapters from "./VodChapters";
 import ExpandMore from "../utils/CustomExpandMore";
 import CustomToolTip from "../utils/CustomToolTip";
 import { parse } from "tinyduration";
-import ContentCopyIcon from "@iconify/icons-mdi/content-copy";
 import { toHMS, toSeconds } from "../utils/helpers";
 
 export default function Vod(props) {
@@ -188,7 +187,7 @@ export default function Vod(props) {
                 )}
                 <Tooltip title="Copy Timestamp">
                   <IconButton onClick={copyTimestamp} color="primary" size="small" aria-label="Copy Current Timestamp">
-                    <Icon icon={ContentCopyIcon} width={18} />
+                    <Icon icon="mdi:content-copy" width={18} />
                   </IconButton>
                 </Tooltip>
               </Box>
