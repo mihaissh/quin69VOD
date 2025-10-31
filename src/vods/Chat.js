@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { Box, Tooltip, IconButton, Button } from "@mui/material";
+import { Box, Tooltip, IconButton, Button, useMediaQuery } from "@mui/material";
 import SimpleBar from "simplebar-react";
 import Loading from "../utils/Loading";
 import Settings from "./Settings";
@@ -13,8 +13,9 @@ const BASE_7TV_EMOTE_API = "https://7tv.io/v3";
 export default function Chat(props) {
   const { isPortrait, vodId, playerRef, playing, VODS_API_BASE, twitchId, userChatDelay, delay, youtube, part, games } = props;
   const [showChat, setShowChat] = useState(true);
-  // Smaller threshold on mobile to avoid unintended auto-scroll
-  const BOTTOM_THRESHOLD = isPortrait ? 64 : 512;
+  const isMobile = useMediaQuery("(max-width: 900px)");
+  // Threshold to detect when user has scrolled away from bottom
+  const BOTTOM_THRESHOLD = 100; // Show "Chat Paused" when scrolled up more than 100px
   
   // Reset chat to visible when switching to portrait
   useEffect(() => {
@@ -53,20 +54,14 @@ export default function Chat(props) {
     localStorage.setItem("chatAlternativeBg", alternativeBg);
   }, [alternativeBg]);
 
-  useEffect(() => {
-    const ref = chatRef.current;
-    if (!ref) return;
+  const handleScroll = useCallback((e) => {
+    const target = e.target;
+    if (!target) return;
     
-    const handleScroll = (e) => {
-      e.stopPropagation();
-      const atBottom = ref.scrollHeight - ref.clientHeight - ref.scrollTop < BOTTOM_THRESHOLD;
-      setScrolling(!atBottom);
-      autoScrollRef.current = atBottom;
-    };
-
-    ref.addEventListener("scroll", handleScroll);
-    return () => ref.removeEventListener("scroll", handleScroll);
-  }, [BOTTOM_THRESHOLD]);
+    const atBottom = target.scrollHeight - target.clientHeight - target.scrollTop < BOTTOM_THRESHOLD;
+    setScrolling(!atBottom);
+    autoScrollRef.current = atBottom;
+  }, []);
 
   useEffect(() => {
     const buildEmotesMap = () => {
@@ -390,8 +385,10 @@ export default function Chat(props) {
           sx={{ 
             position: "fixed",
             zIndex: 1000,
-            right: 16,
-            top: 16,
+            right: { xs: 24, sm: 24, md: 24 }, // Moved left (higher right value)
+            // Position below navbar: navbar height (64px on md) + more spacing to appear inside video
+            // On mobile VOD pages navbar is hidden, so top is just spacing
+            top: { xs: 16, sm: 16, md: 88 }, // 64px navbar + 24px spacing on desktop to appear inside video
           }}
         >
           <Tooltip title="Show Chat" placement="left">
@@ -440,13 +437,23 @@ export default function Chat(props) {
           />
 
           {/* Chat Messages */}
-          <Box sx={{ flex: 1, minHeight: 0, position: "relative", display: "flex", flexDirection: "column" }}>
+          <Box sx={{ flex: 1, minHeight: 0, position: "relative", display: "flex", flexDirection: "column", overflow: "hidden" }}>
             {comments.current.length === 0 ? (
-              <Loading />
+              <Box sx={{ 
+                height: "100%", 
+                width: "100%", 
+                display: "flex", 
+                flexDirection: "column", 
+                minHeight: 0, 
+                flex: 1,
+                overflow: "hidden",
+              }}>
+                <Loading />
+              </Box>
             ) : (
               <>
                 <SimpleBar 
-                  scrollableNodeProps={{ ref: chatRef }} 
+                  scrollableNodeProps={{ ref: chatRef, onScroll: handleScroll }} 
                   style={{ 
                     height: "100%", 
                     overflowX: "hidden",
@@ -477,20 +484,28 @@ export default function Chat(props) {
                       size="small" 
                       onClick={scrollToBottom}
                       variant="contained"
+                      startIcon={<Icon icon="mdi:pause" width={16} style={{ color: "#fff" }} />}
                       sx={{
-                        backgroundColor: "#8B5CF6",
+                        backgroundColor: "#2A2A2A",
                         color: "#fff",
-                        borderRadius: 2,
+                        borderRadius: "8px",
                         textTransform: "none",
-                        fontWeight: 700,
+                        fontWeight: 500,
                         boxShadow: "none",
+                        px: 2,
+                        py: 1,
+                        minWidth: "auto",
                         "&:hover": {
-                          backgroundColor: "#7C3AED",
+                          backgroundColor: "#353535",
                           boxShadow: "none",
+                        },
+                        "& .MuiButton-startIcon": {
+                          marginRight: 1,
+                          marginLeft: 0,
                         }
                       }}
                     >
-                      Resume Chat
+                      Chat Paused
                     </Button>
                   </Box>
                 )}
@@ -513,5 +528,3 @@ export default function Chat(props) {
     </>
   );
 }
-
-

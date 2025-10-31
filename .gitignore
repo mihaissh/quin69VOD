@@ -47,3 +47,7 @@ netlify.toml.backup
 # Optional: Keep these if you use them
 # .prettierrc
 # .eslintrc
+
+
+.cursor/rules/kluster-code-verify.mdc
+.kluster

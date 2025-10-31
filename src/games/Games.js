@@ -45,7 +45,6 @@ export default function Games(props) {
         });
     };
     fetchVod();
-    return;
   }, [vodId, VODS_API_BASE, channel]);
 
   useEffect(() => {
@@ -56,7 +55,6 @@ export default function Games(props) {
     const game_id = search.get("game_id") !== null ? parseInt(search.get("game_id")) : undefined;
     const index = vod.games.findIndex((game) => parseInt(game.id) === game_id);
     setPart({ part: index === -1 ? 1 : index + 1, timestamp: 0 });
-    return;
   }, [vod, location.search]);
 
   const handlePartChange = (evt) => {
@@ -79,7 +77,7 @@ export default function Games(props) {
   if (games.length === 0) return <NotFound />;
 
   return (
-    <Box sx={{ height: "100%", display: "flex", flexDirection: "column", backgroundColor: "#0E0E10" }}>
+    <Box sx={{ height: "100%", display: "flex", flexDirection: "column", backgroundColor: "#0E0E10", pb: 1, boxSizing: "border-box", overflow: "hidden" }}>
       <Box sx={{ 
         display: "flex", 
         flexDirection: isPortrait ? "column" : "row", 

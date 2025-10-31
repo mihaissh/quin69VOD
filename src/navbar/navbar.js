@@ -262,26 +262,28 @@ export default function Navbar(props) {
                   }}
                 />
               </Box>
-              {/* Home Button moved after viewers/live */}
-              <Tooltip title="Home" arrow>
-                <CustomLink href="/" sx={{ textDecoration: "none" }}>
-                  <IconButton
-                    size={isMobile ? "small" : "medium"}
-                    sx={(theme) => ({
-                      backgroundColor: alpha(theme.palette.primary.main, 0.12),
-                      border: `1px solid ${alpha(theme.palette.primary.main, 0.24)}`,
-                      transition: "all 0.2s ease-in-out",
-                      "&:hover": {
-                        backgroundColor: alpha(theme.palette.primary.main, 0.2),
-                        transform: "scale(1.05)",
-                      },
-                    })}
-                    aria-label="Home"
-                  >
-                    <Icon icon="mdi:home" width={isMobile ? 20 : 24} style={{ color: 'currentColor' }} />
-                  </IconButton>
-                </CustomLink>
-              </Tooltip>
+              {/* Home Button removed on mobile */}
+              {!showCompactNav && (
+                <Tooltip title="Home" arrow>
+                  <CustomLink href="/" sx={{ textDecoration: "none" }}>
+                    <IconButton
+                      size="medium"
+                      sx={(theme) => ({
+                        backgroundColor: alpha(theme.palette.primary.main, 0.12),
+                        border: `1px solid ${alpha(theme.palette.primary.main, 0.24)}`,
+                        transition: "all 0.2s ease-in-out",
+                        "&:hover": {
+                          backgroundColor: alpha(theme.palette.primary.main, 0.2),
+                          transform: "scale(1.05)",
+                        },
+                      })}
+                      aria-label="Home"
+                    >
+                      <Icon icon="mdi:home" width={24} style={{ color: 'currentColor' }} />
+                    </IconButton>
+                  </CustomLink>
+                </Tooltip>
+              )}
             </Box>
 
             {/* Right Section - Social Icons */}

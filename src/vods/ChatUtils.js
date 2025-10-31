@@ -39,4 +39,3 @@ export function ensureAccessibleTextColor(userHex) {
     return "#e5e7eb";
   }
 }
-

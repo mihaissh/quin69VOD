@@ -56,4 +56,3 @@ const ChatMessage = memo(({ comment, showTimestamp, badges, emotesMap }) => {
 ChatMessage.displayName = 'ChatMessage';
 
 export default ChatMessage;
-
