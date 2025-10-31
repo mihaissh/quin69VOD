@@ -2,6 +2,8 @@
 
 Browse and watch Quin69's Twitch VODs with chat replay.
 
+> **Note:** This project is forked from [OP-Archives/Quin69-site](https://github.com/OP-Archives/Quin69-site)
+
 ![React](https://img.shields.io/badge/React-19.0.0-blue)
 ![Material-UI](https://img.shields.io/badge/Material--UI-6.2.0-blue)
 
@@ -50,3 +52,4 @@ npm start       # Development server
 npm run build   # Production build
 npm test        # Run tests
 ```
+**Made with ❤️ for the Quin69 community**
