@@ -47,7 +47,6 @@ export default function Vod(props) {
         });
     };
     fetchVod();
-    return;
   }, [vodId, VODS_API_BASE, channel]);
 
   useEffect(() => {
@@ -61,7 +60,6 @@ export default function Vod(props) {
       setDrive(vod.drive.filter((data) => data.type === type));
     }
     setChapter(vod.chapters ? vod.chapters[0] : null);
-    return;
   }, [vod, type]);
 
   useEffect(() => {
@@ -80,7 +78,6 @@ export default function Vod(props) {
       }
     }
     setPart({ part: tmpPart, timestamp: timestamp });
-    return;
   }, [location.search, youtube]);
 
   useEffect(() => {
@@ -91,7 +88,6 @@ export default function Vod(props) {
         break;
       }
     }
-    return;
   }, [currentTime, vod, playerRef]);
 
   useEffect(() => {
@@ -107,7 +103,6 @@ export default function Vod(props) {
     }
     const tmpDelay = vodDuration - totalYoutubeDuration < 0 ? 0 : vodDuration - totalYoutubeDuration;
     setDelay(tmpDelay);
-    return;
   }, [youtube, vod]);
 
   const handlePartChange = (evt) => {
@@ -121,7 +116,9 @@ export default function Vod(props) {
 
   useEffect(() => {
     if (delay === undefined) return;
-    console.info(`Chat Delay: ${userChatDelay + delay} seconds`);
+    if (process.env.NODE_ENV === 'development') {
+      console.info(`Chat Delay: ${userChatDelay + delay} seconds`);
+    }
   }, [userChatDelay, delay]);
 
   const copyTimestamp = () => {
@@ -133,8 +130,8 @@ export default function Vod(props) {
   if (youtube.length === 0) return <NotFound channel={channel} />;
 
   return (
-    <Box sx={{ height: "100%", width: "100%" }}>
-      <Box sx={{ display: "flex", flexDirection: isPortrait ? "column" : "row", height: "100%", width: "100%" }}>
+    <Box sx={{ height: "100%", width: "100%", display: "flex", flexDirection: "column", pb: 1, boxSizing: "border-box", overflow: "hidden" }}>
+      <Box sx={{ display: "flex", flexDirection: isPortrait ? "column" : "row", flex: 1, minHeight: 0, width: "100%" }}>
         <Box sx={{ 
           display: "flex", 
           height: isPortrait ? "auto" : "100%",

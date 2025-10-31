@@ -10,10 +10,8 @@ root.render(<App />);
 
 // Report web vitals
 reportWebVitals((metric) => {
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[Web Vitals]', metric);
-  }
   // You can send to analytics endpoint here
+  // Web vitals logging removed to reduce console noise
 });
 
 // Log performance metrics after page load
@@ -22,28 +20,6 @@ if (process.env.NODE_ENV === 'development') {
     setTimeout(logPerformanceMetrics, 0);
   });
 }
-
-// Service worker temporarily disabled to troubleshoot chunk loading issues
-// TODO: Re-enable after fixing the module loading error
-/*
-if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('/service-worker.js')
-      .then((registration) => {
-        console.log('[SW] Registered:', registration);
-        
-        // Check for updates periodically
-        setInterval(() => {
-          registration.update();
-        }, 60 * 60 * 1000); // Check every hour
-      })
-      .catch((error) => {
-        console.error('[SW] Registration failed:', error);
-      });
-  });
-}
-*/
 
 // Unregister any existing service workers
 if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {

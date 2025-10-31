@@ -73,4 +73,3 @@ export const GenericSkeleton = ({ rows = 5 }) => {
 };
 
 export default VodCardSkeleton;
-

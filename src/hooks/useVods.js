@@ -61,8 +61,35 @@ export const useVods = (filter, filterOptions, page, limit) => {
       }
 
       const response = await vodsClient.service("vods").find({ query });
-      setVods(response.data);
-      setTotalVods(response.total);
+      
+      // Handle different response structures from FeathersJS
+      // Response should be: { data: [], total: number } when pagination is enabled
+      // Or might be just an array if pagination info is not available
+      let vodsData, totalCount;
+      
+      if (Array.isArray(response)) {
+        // If response is an array, pagination info is not available
+        vodsData = response;
+        totalCount = null; // Can't determine total from array alone
+      } else if (response && typeof response === 'object') {
+        // Response should be an object with data and total
+        vodsData = Array.isArray(response.data) ? response.data : [];
+        totalCount = response.total !== undefined ? response.total : null;
+      } else {
+        vodsData = [];
+        totalCount = null;
+      }
+      
+      // Log for debugging if we get fewer items than expected (but not on last page)
+      if (vodsData.length < limit && page > 1 && vodsData.length > 0 && totalCount !== null) {
+        const expectedItemsOnPage = Math.min(limit, totalCount - (page - 1) * limit);
+        if (vodsData.length < expectedItemsOnPage) {
+          console.warn(`Page ${page}: Expected ${expectedItemsOnPage} items, got ${vodsData.length}. Total: ${totalCount}, Skip: ${(page - 1) * limit}`);
+        }
+      }
+      
+      setVods(vodsData);
+      setTotalVods(totalCount);
     } catch (e) {
       console.error("Error fetching VODs:", e);
       setError(e);

@@ -45,7 +45,6 @@ export default function Vod(props) {
         });
     };
     fetchVod();
-    return;
   }, [vodId, VODS_API_BASE, channel]);
 
   useEffect(() => {
@@ -53,7 +52,6 @@ export default function Vod(props) {
     const useType = vod.youtube.some((youtube) => youtube.type === "live") ? "live" : "vod";
     setDrive(vod.drive.filter((data) => data.type === useType));
     setChapter(vod.chapters ? vod.chapters[0] : null);
-    return;
   }, [vod, type, location.search]);
 
   useEffect(() => {
@@ -64,7 +62,6 @@ export default function Vod(props) {
         break;
       }
     }
-    return;
   }, [currentTime, vod, playerRef]);
 
   const handleExpandClick = () => {
@@ -73,15 +70,16 @@ export default function Vod(props) {
 
   useEffect(() => {
     if (delay === undefined) return;
-    console.info(`Chat Delay: ${userChatDelay + delay} seconds`);
-    return;
+    if (process.env.NODE_ENV === 'development') {
+      console.info(`Chat Delay: ${userChatDelay + delay} seconds`);
+    }
   }, [userChatDelay, delay]);
 
   if (vod === undefined || drive === undefined) return <Loading />;
 
   return (
-    <Box sx={{ height: "100%", width: "100%" }}>
-      <Box sx={{ display: "flex", flexDirection: isPortrait ? "column" : "row", height: "100%", width: "100%" }}>
+    <Box sx={{ height: "100%", width: "100%", display: "flex", flexDirection: "column", pb: 1, boxSizing: "border-box", overflow: "hidden" }}>
+      <Box sx={{ display: "flex", flexDirection: isPortrait ? "column" : "row", flex: 1, minHeight: 0, width: "100%" }}>
         <Box sx={{ 
           display: "flex", 
           height: isPortrait ? "auto" : "100%",

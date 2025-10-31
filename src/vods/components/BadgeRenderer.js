@@ -106,4 +106,3 @@ const BadgeRenderer = memo(({ textBadges, badges }) => {
 BadgeRenderer.displayName = 'BadgeRenderer';
 
 export default BadgeRenderer;
-

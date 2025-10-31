@@ -29,7 +29,7 @@ export const useTwitchStatus = (channelName, twitchId) => {
         setViewerCount(newViewerCount);
         
         // Log status change
-        if (!wasLive) {
+        if (!wasLive && process.env.NODE_ENV === 'development') {
           console.info(`${channelName} went LIVE with ${newViewerCount} viewers`);
         }
       } else {
@@ -37,7 +37,7 @@ export const useTwitchStatus = (channelName, twitchId) => {
         setViewerCount(0);
         
         // Log status change
-        if (wasLive) {
+        if (wasLive && process.env.NODE_ENV === 'development') {
           console.info(`${channelName} went OFFLINE`);
         }
       }
@@ -72,7 +72,9 @@ export const useTwitchStatus = (channelName, twitchId) => {
     // Check status when page becomes visible again
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        console.info("Page visible again, checking live status...");
+        if (process.env.NODE_ENV === 'development') {
+          console.info("Page visible again, checking live status...");
+        }
         checkLiveStatus();
       }
     };
@@ -89,4 +91,3 @@ export const useTwitchStatus = (channelName, twitchId) => {
 
   return { isLive, viewerCount, loading, profileImage };
 };
-

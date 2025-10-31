@@ -32,7 +32,17 @@ const VodCard = memo(({ vod, game, gridSize, index, showEasterEgg }) => {
 
   return (
     <Grid key={game.id} size={{ xs: 12, sm: 6, md: 4, lg: gridSize }}>
-      <CustomLink href={gameLink} sx={{ textDecoration: "none", display: "block", height: "100%" }}>
+      <CustomLink 
+        href={gameLink} 
+        sx={{ 
+          textDecoration: "none", 
+          display: "block", 
+          height: "100%",
+          "&:hover": {
+            opacity: 1, // Override CustomLink's default hover opacity
+          },
+        }}
+      >
         <Box 
           sx={{ 
             height: "100%", 
@@ -46,7 +56,14 @@ const VodCard = memo(({ vod, game, gridSize, index, showEasterEgg }) => {
             transition: "all 0.2s ease-in-out",
             "&:hover": {
               transform: "translateY(-4px)",
-              boxShadow: "0 12px 32px rgba(0, 0, 0, 0.5)",
+              boxShadow: (theme) => {
+                const primaryColor = theme.palette.primary.main;
+                // Convert hex to rgb for rgba usage
+                const r = parseInt(primaryColor.slice(1, 3), 16);
+                const g = parseInt(primaryColor.slice(3, 5), 16);
+                const b = parseInt(primaryColor.slice(5, 7), 16);
+                return `0 8px 24px rgba(${r}, ${g}, ${b}, 0.15), 0 4px 12px rgba(${r}, ${g}, ${b}, 0.1)`;
+              },
               borderColor: "rgba(139, 92, 246, 0.3)",
             },
           }}
@@ -66,7 +83,7 @@ const VodCard = memo(({ vod, game, gridSize, index, showEasterEgg }) => {
               image={game.thumbnail_url}
               alt={game.title}
               loading={isAboveFold ? "eager" : "lazy"}
-              fetchpriority={isAboveFold ? "high" : "auto"}
+              fetchPriority={isAboveFold ? "high" : "auto"}
               decoding="async"
               draggable={false}
               sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw"
