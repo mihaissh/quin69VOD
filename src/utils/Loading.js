@@ -13,41 +13,32 @@ export default function Loading({ message }) {
           width: "100%", 
           flexDirection: "column",
           minHeight: "300px",
+          gap: 3,
         }}
       >
-        <Box 
-          sx={{ 
-            display: "flex", 
-            flexDirection: "column", 
-            justifyContent: "center", 
+        <Box
+          sx={{
+            display: "flex",
             alignItems: "center",
-            gap: 3,
+            justifyContent: "center",
+            color: "primary.main",
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "primary.main",
+          <LoadingSVG size={80} />
+        </Box>
+        {message && (
+          <Typography 
+            variant="body2" 
+            color="text.secondary"
+            sx={{ 
+              fontWeight: 500,
+              letterSpacing: "0.5px",
+              textAlign: "center",
             }}
           >
-            <LoadingSVG size={80} />
-          </Box>
-          {message && (
-            <Typography 
-              variant="body2" 
-              color="text.secondary"
-              sx={{ 
-                fontWeight: 500,
-                letterSpacing: "0.5px",
-                textAlign: "center",
-              }}
-            >
-              {message}
-            </Typography>
-          )}
-        </Box>
+            {message}
+          </Typography>
+        )}
       </Box>
     </Fade>
   );

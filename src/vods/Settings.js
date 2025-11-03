@@ -1,23 +1,21 @@
-import { useMemo } from "react";
-import debounce from "lodash.debounce";
-import { Box, Modal, Typography, TextField, InputAdornment, FormGroup, FormControlLabel, Checkbox, IconButton, Fade, Backdrop, Divider, SwipeableDrawer, useMediaQuery } from "@mui/material";
+import { useCallback } from "react";
+import { Box, Modal, Typography, TextField, InputAdornment, FormGroup, FormControlLabel, Checkbox, IconButton, Fade, Backdrop, Divider, SwipeableDrawer } from "@mui/material";
 import { Icon } from "@iconify/react";
-import { useTheme } from "@mui/material/styles";
+import { useDebouncedCallback } from "../hooks/useDebounce";
+import { useResponsive } from "../hooks/useMediaQueries";
 
 export default function Settings(props) {
   const { userChatDelay, setUserChatDelay, showModal, setShowModal, showTimestamp, setShowTimestamp, alternativeBg, setAlternativeBg } = props;
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { isMobile } = useResponsive();
 
-  const delayChange = useMemo(
-    () =>
-      debounce((evt) => {
-        if (evt.target.value.length === 0) return;
-        const value = Number(evt.target.value);
-        if (isNaN(value)) return;
-        setUserChatDelay(value);
-      }, 300),
-    [setUserChatDelay]
+  const delayChange = useDebouncedCallback(
+    useCallback((evt) => {
+      if (evt.target.value.length === 0) return;
+      const value = Number(evt.target.value);
+      if (isNaN(value)) return;
+      setUserChatDelay(value);
+    }, [setUserChatDelay]),
+    300
   );
 
   // Mobile: bottom sheet; Desktop: centered modal

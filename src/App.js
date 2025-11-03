@@ -23,7 +23,7 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>
-        <Parent>
+        <Parent className="min-h-screen bg-zinc-900">
           <Suspense fallback={<Loading />}>
             <Routes>
               <Route path="*" element={<NotFound channel={channel} />} />
@@ -37,16 +37,7 @@ export default function App() {
                   </>
                 }
               />
-              <Route
-                exact
-                path="/vods"
-                element={
-                  <>
-                    <Navbar channel={channel} twitchId={twitchId} />
-                    <Vods channel={channel} twitchId={twitchId} VODS_API_BASE={VODS_API_BASE} />
-                  </>
-                }
-              />
+              <Route exact path="/vods" element={<><Navbar channel={channel} twitchId={twitchId} /><Vods channel={channel} twitchId={twitchId} VODS_API_BASE={VODS_API_BASE} /></>} />
               <Route exact path="/vods/:vodId" element={<><Navbar channel={channel} twitchId={twitchId} /><YoutubeVod channel={channel} twitchId={twitchId} type="vod" VODS_API_BASE={VODS_API_BASE} /></>} />
               <Route exact path="/live/:vodId" element={<><Navbar channel={channel} twitchId={twitchId} /><YoutubeVod channel={channel} twitchId={twitchId} type="live" VODS_API_BASE={VODS_API_BASE} /></>} />
               <Route exact path="/youtube/:vodId" element={<><Navbar channel={channel} twitchId={twitchId} /><YoutubeVod channel={channel} twitchId={twitchId} VODS_API_BASE={VODS_API_BASE} /></>} />

@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Box, Typography, MenuItem, Tooltip, useMediaQuery, FormControl, InputLabel, Select, IconButton, Collapse, Divider } from "@mui/material";
+import { Box, Typography, MenuItem, Tooltip, FormControl, InputLabel, Select, IconButton, Collapse, Divider } from "@mui/material";
 import Loading from "../utils/Loading";
 import { useLocation, useParams } from "react-router-dom";
 import YoutubePlayer from "./YoutubePlayer";
@@ -9,12 +9,12 @@ import Chat from "./Chat";
 import Chapters from "./VodChapters";
 import ExpandMore from "../utils/CustomExpandMore";
 import CustomToolTip from "../utils/CustomToolTip";
-import { parse } from "tinyduration";
-import { toHMS, toSeconds } from "../utils/helpers";
+import { toHMS, toSeconds, convertTimestamp } from "../utils/helpers";
+import { useResponsive } from "../hooks/useMediaQueries";
 
 export default function Vod(props) {
   const location = useLocation();
-  const isPortrait = useMediaQuery("(orientation: portrait)");
+  const { isPortrait } = useResponsive();
   const { vodId } = useParams();
   const { type, VODS_API_BASE, channel, twitchId } = props;
   const [vod, setVod] = useState(undefined);
@@ -218,16 +218,3 @@ export default function Vod(props) {
   );
 }
 
-/**
- * Parse Timestamp (1h2m3s) to seconds.
- */
-const convertTimestamp = (timestamp) => {
-  try {
-    timestamp = parse(`PT${timestamp.toUpperCase()}`);
-    timestamp = (timestamp?.hours || 0) * 60 * 60 + (timestamp?.minutes || 0) * 60 + (timestamp?.seconds || 0);
-  } catch {
-    timestamp = 0;
-  }
-
-  return timestamp;
-};

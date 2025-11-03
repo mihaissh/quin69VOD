@@ -130,12 +130,12 @@ export default function Navbar(props) {
         <AppBar 
           position={isMobile ? "sticky" : "static"}
           elevation={0}
+          className="bg-zinc-800 border-b border-zinc-700 shadow-lg"
           sx={{
             top: 0,
             zIndex: (theme) => theme.zIndex.appBar,
-            background: (theme) => `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.elevated} 100%)`,
-            borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
-            backdropFilter: "blur(10px)",
+            backgroundImage: "none !important",
+            backgroundColor: "#27272a !important",
             transition: "all 0.3s ease-in-out",
           }}
         >
@@ -171,7 +171,7 @@ export default function Navbar(props) {
                         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                         border: isLive 
                           ? { xs: "2px solid #ff0000", sm: "2px solid #ff0000", md: "3px solid #ff0000" }
-                          : { xs: "2px solid rgba(255, 255, 255, 0.1)", sm: "2px solid rgba(255, 255, 255, 0.1)", md: "3px solid rgba(255, 255, 255, 0.1)" },
+                          : { xs: "2px solid #34d399", sm: "2px solid #34d399", md: "3px solid #34d399" },
                         boxShadow: isLive 
                           ? { xs: "0 0 12px rgba(255, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.3)", sm: "0 0 20px rgba(255, 0, 0, 0.6), 0 4px 12px rgba(0, 0, 0, 0.3)" }
                           : "0 2px 8px rgba(0, 0, 0, 0.2)",
