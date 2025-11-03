@@ -42,14 +42,6 @@
         }
       ]
     }
-  ],
-  "env": {
-    "REACT_APP_CHANNEL": "@react_app_channel",
-    "REACT_APP_TWITCH_ID": "@react_app_twitch_id",
-    "REACT_APP_VODS_API_BASE": "@react_app_vods_api_base",
-    "REACT_APP_GITHUB": "@react_app_github",
-    "REACT_APP_START_DATE": "@react_app_start_date",
-    "REACT_APP_DEFAULT_DELAY": "@react_app_default_delay"
-  }
+  ]
 }
 
