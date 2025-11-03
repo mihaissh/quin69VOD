@@ -44,6 +44,7 @@ const VodCard = memo(({ vod, game, gridSize, index, showEasterEgg }) => {
         }}
       >
         <Box 
+          className="group"
           sx={{ 
             height: "100%", 
             display: "flex", 
@@ -51,20 +52,29 @@ const VodCard = memo(({ vod, game, gridSize, index, showEasterEgg }) => {
             borderRadius: 3,
             overflow: "hidden",
             backgroundColor: "background.paper",
-            border: "1px solid rgba(255, 255, 255, 0.05)",
+            border: "1px solid",
+            borderColor: "#3f3f46",
             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
             transition: "all 0.2s ease-in-out",
+            position: "relative",
             "&:hover": {
               transform: "translateY(-4px)",
-              boxShadow: (theme) => {
-                const primaryColor = theme.palette.primary.main;
-                // Convert hex to rgb for rgba usage
-                const r = parseInt(primaryColor.slice(1, 3), 16);
-                const g = parseInt(primaryColor.slice(3, 5), 16);
-                const b = parseInt(primaryColor.slice(5, 7), 16);
-                return `0 8px 24px rgba(${r}, ${g}, ${b}, 0.15), 0 4px 12px rgba(${r}, ${g}, ${b}, 0.1)`;
-              },
-              borderColor: "rgba(139, 92, 246, 0.3)",
+              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.4)",
+              borderColor: "#10b981",
+            },
+            "&::before": {
+              content: '""',
+              position: "absolute",
+              inset: 0,
+              background: "linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%)",
+              borderRadius: 3,
+              opacity: 0,
+              transition: "opacity 0.2s ease-in-out",
+              pointerEvents: "none",
+              zIndex: 0,
+            },
+            "&:hover::before": {
+              opacity: 1,
             },
           }}
         >
@@ -95,6 +105,10 @@ const VodCard = memo(({ vod, game, gridSize, index, showEasterEgg }) => {
                 height: "100%",
                 objectFit: "cover",
                 borderRadius: "12px 12px 0 0",
+                transition: "transform 0.5s ease-in-out",
+                ".group:hover &": {
+                  transform: "scale(1.1)",
+                },
               }}
             />
             
@@ -190,6 +204,12 @@ const VodCard = memo(({ vod, game, gridSize, index, showEasterEgg }) => {
                     WebkitBoxOrient: "vertical",
                     lineHeight: 1.3,
                     minHeight: "2.6em",
+                    transition: "color 0.3s ease-in-out",
+                    position: "relative",
+                    zIndex: 1,
+                    ".group:hover &": {
+                      color: "#34d399",
+                    },
                   }}
                 >
                   {game.title}

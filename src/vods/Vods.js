@@ -16,6 +16,27 @@ import { VodCardSkeleton } from "../components/LoadingSkeleton";
 const FILTERS = ["Default", "Date", "Title", "Game"];
 const START_DATE = process.env.REACT_APP_START_DATE;
 
+// Shared TextField styles for filter inputs
+const filterTextFieldSx = {
+  "& .MuiOutlinedInput-root": {
+    borderRadius: 2,
+    backgroundColor: "#3f3f46",
+    "& fieldset": {
+      borderColor: "#52525b",
+    },
+    "&:hover fieldset": {
+      borderColor: "#10b981",
+    },
+    "&.Mui-focused fieldset": {
+      borderColor: "#10b981",
+      borderWidth: "2px",
+    },
+  },
+  "& .MuiInputBase-input": {
+    color: "#fafafa",
+  },
+};
+
 export default function Vods() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -132,15 +153,18 @@ export default function Vods() {
           </Box>
         </Fade>
         
-        <Box sx={{ 
-          mb: 4,
-          p: 3,
-          borderRadius: 3,
-          backgroundColor: "background.paper",
-          border: "1px solid",
-          borderColor: "rgba(255, 255, 255, 0.05)",
-          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
-        }}>
+        <Box 
+          className="animate-block-appear"
+          sx={{ 
+            mb: 4,
+            p: 3,
+            borderRadius: 3,
+            backgroundColor: "#27272a",
+            border: "1px solid",
+            borderColor: "#3f3f46",
+            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+          }}
+        >
           <Box sx={{ 
             display: "flex", 
             flexDirection: isMobile ? "column" : "row", 
@@ -157,13 +181,14 @@ export default function Vods() {
                 sx={{
                   borderRadius: 2,
                   "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "rgba(139, 92, 246, 0.3)",
+                    borderColor: "#3f3f46",
                   },
                   "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "rgba(139, 92, 246, 0.5)",
+                    borderColor: "#10b981",
                   },
                   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "primary.main",
+                    borderColor: "#10b981",
+                    borderWidth: "2px",
                   },
                 }}
               >
@@ -232,11 +257,7 @@ export default function Vods() {
                 onChange={handleTitleChange} 
                 value={filterTitleInput}
                 placeholder="Type to search..."
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: 2,
-                  }
-                }}
+                sx={filterTextFieldSx}
               />
             )}
             
@@ -248,11 +269,7 @@ export default function Vods() {
                 onChange={handleGameChange} 
                 value={filterGameInput}
                 placeholder="Type game name..."
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: 2,
-                  }
-                }}
+                sx={filterTextFieldSx}
               />
             )}
           </Box>
@@ -319,15 +336,20 @@ export default function Vods() {
                     fontWeight: 600,
                     borderRadius: 2,
                     backgroundColor: "rgba(255, 255, 255, 0.03)",
-                    border: "1px solid rgba(255, 255, 255, 0.05)",
+                    border: "1px solid",
+                    borderColor: "#3f3f46",
                     "&.Mui-selected": {
-                      backgroundColor: "primary.main",
+                      backgroundColor: "#10b981",
                       color: "white",
                       border: "1px solid",
-                      borderColor: "primary.light",
+                      borderColor: "#34d399",
+                      "&:hover": {
+                        backgroundColor: "#059669",
+                      },
                     },
                     "&:hover": {
-                      backgroundColor: "rgba(255, 255, 255, 0.08)",
+                      backgroundColor: "rgba(16, 185, 129, 0.1)",
+                      borderColor: "#10b981",
                     },
                   }}
                 />

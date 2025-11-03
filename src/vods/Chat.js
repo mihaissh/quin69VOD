@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { Box, Tooltip, IconButton, Button, useMediaQuery } from "@mui/material";
+import { Box, Tooltip, IconButton, Button } from "@mui/material";
 import SimpleBar from "simplebar-react";
 import Loading from "../utils/Loading";
 import Settings from "./Settings";
@@ -13,7 +13,6 @@ const BASE_7TV_EMOTE_API = "https://7tv.io/v3";
 export default function Chat(props) {
   const { isPortrait, vodId, playerRef, playing, VODS_API_BASE, twitchId, userChatDelay, delay, youtube, part, games } = props;
   const [showChat, setShowChat] = useState(true);
-  const isMobile = useMediaQuery("(max-width: 900px)");
   // Threshold to detect when user has scrolled away from bottom
   const BOTTOM_THRESHOLD = 100; // Show "Chat Paused" when scrolled up more than 100px
   

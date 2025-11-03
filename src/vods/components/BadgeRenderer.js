@@ -100,7 +100,7 @@ const BadgeRenderer = memo(({ textBadges, badges }) => {
 
   if (!badgeElements) return null;
 
-  return <Box sx={{ display: "inline" }}>{badgeElements}</Box>;
+  return <span style={{ display: "inline", marginRight: "0.25rem", verticalAlign: "middle" }}>{badgeElements}</span>;
 });
 
 BadgeRenderer.displayName = 'BadgeRenderer';

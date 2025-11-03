@@ -1,0 +1,55 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": "build",
+  "devCommand": "npm start",
+  "installCommand": "npm install",
+  "framework": "create-react-app",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/static/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    }
+  ],
+  "env": {
+    "REACT_APP_CHANNEL": "@react_app_channel",
+    "REACT_APP_TWITCH_ID": "@react_app_twitch_id",
+    "REACT_APP_VODS_API_BASE": "@react_app_vods_api_base",
+    "REACT_APP_GITHUB": "@react_app_github",
+    "REACT_APP_START_DATE": "@react_app_start_date",
+    "REACT_APP_DEFAULT_DELAY": "@react_app_default_delay"
+  }
+}
+

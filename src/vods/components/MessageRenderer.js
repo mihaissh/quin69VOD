@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from "react";
-import { Box, Typography, Link } from "@mui/material";
+import { Link } from "@mui/material";
 import Twemoji from "react-twemoji";
 import { TwitchEmote, TwitchEmoticon, SevenTVEmote, FFZEmote, BTTVEmote } from "./EmoteRenderer";
 
@@ -81,7 +81,7 @@ const MessageRenderer = memo(({ fragments, emotesMap }) => {
         } else {
           textFragments.push(
             <Twemoji key={`text-${messageCount++}`} noWrapper options={{ className: "twemoji" }}>
-              <Typography variant="body1" display="inline">{`${text} `}</Typography>
+              <span>{`${text} `}</span>
             </Twemoji>
           );
         }
@@ -93,7 +93,7 @@ const MessageRenderer = memo(({ fragments, emotesMap }) => {
 
   if (!renderedFragments) return null;
 
-  return <Box sx={{ display: "inline" }}>{renderedFragments}</Box>;
+  return <span style={{ display: "inline" }}>{renderedFragments}</span>;
 });
 
 MessageRenderer.displayName = 'MessageRenderer';
