@@ -24,7 +24,7 @@ const socials = [
     icon: <Icon icon="mdi:twitch" width={24} style={{ color: '#9146FF' }} />, // Twitch Purple
   },
   {
-    path: `${process.env.REACT_APP_GITHUB}`,
+    path: `https://github.com/mihaissh/quin69VOD`,
     icon: <Icon icon="mdi:github" width={24} style={{ color: '#ffffff' }} />, // GitHub
   },
 ];
