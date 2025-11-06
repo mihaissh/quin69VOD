@@ -108,106 +108,115 @@ export default function Vods() {
   );
 
   return (
-    <SimpleBar style={{ minHeight: 0, height: "100%" }}>
-      <Container maxWidth="xl" sx={{ py: 3 }}>
-        <Fade in timeout={600}>
-          <Box sx={{ 
-            display: "flex", 
-            justifyContent: "space-between", 
-            alignItems: "center",
-            mb: 3,
-            flexDirection: isMobile ? "column" : "row",
-            gap: 2,
-          }}>
-            <Box sx={{ position: "relative", display: "inline-block" }}>
-              {totalVods !== null && (
-                <Typography 
-                  variant="h3" 
-                  onClick={handleTitleClick}
-                  sx={{ 
-                    fontWeight: 700,
-                    fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
-                    background: (theme) => theme.palette.primary.gradient,
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                    letterSpacing: "-0.02em",
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <SimpleBar style={{ minHeight: 0, height: "100%" }}>
+        <Container maxWidth="xl" sx={{ py: 3 }}>
+          <Fade in timeout={600}>
+            <Box sx={{ 
+              display: "flex", 
+              justifyContent: "space-between", 
+              alignItems: "center",
+              mb: 3,
+              flexDirection: isMobile ? "column" : "row",
+              gap: 2,
+              minHeight: { xs: "80px", sm: "90px", md: "100px" },
+            }}>
+              <Box sx={{ position: "relative", display: "inline-block", minHeight: { xs: "80px", sm: "90px", md: "100px" } }}>
+                {totalVods !== null ? (
+                  <>
+                    <Typography 
+                      variant="h3" 
+                      onClick={handleTitleClick}
+                      sx={{ 
+                        fontWeight: 700,
+                        fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
+                        background: (theme) => theme.palette.primary.gradient,
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                        letterSpacing: "-0.02em",
+                        mb: 0.5,
+                        cursor: "pointer",
+                        userSelect: "none",
+                        transition: "transform 0.1s ease",
+                        position: "relative",
+                        zIndex: 1,
+                        "&:active": {
+                          transform: "scale(0.98)",
+                        },
+                      }}
+                    >
+                      VOD Archive
+                    </Typography>
+                    <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 500 }}>
+                      {`${totalVods.toLocaleString()} videos available`}
+                    </Typography>
+                  </>
+                ) : (
+                  <Box sx={{ 
+                    height: { xs: "2rem", sm: "2.5rem", md: "3rem" },
                     mb: 0.5,
-                    cursor: "pointer",
-                    userSelect: "none",
-                    transition: "transform 0.1s ease",
-                    position: "relative",
-                    zIndex: 1,
-                    "&:active": {
-                      transform: "scale(0.98)",
+                    display: "block",
+                  }} />
+                )}
+              </Box>
+            </Box>
+          </Fade>
+          
+          <Box 
+            className="animate-block-appear"
+            sx={{ 
+              mb: 4,
+              p: 3,
+              borderRadius: 3,
+              backgroundColor: "#27272a",
+              border: "1px solid",
+              borderColor: "#3f3f46",
+              boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+            }}
+          >
+            <Box sx={{ 
+              display: "flex", 
+              flexDirection: isMobile ? "column" : "row", 
+              alignItems: isMobile ? "stretch" : "center",
+              gap: 2,
+            }}>
+              <FormControl sx={{ minWidth: { xs: "100%", sm: 180 } }}>
+                <InputLabel id="filter-label">Filter By</InputLabel>
+                <Select 
+                  labelId="filter-label" 
+                  label="Filter By" 
+                  value={filter} 
+                  onChange={changeFilter}
+                  sx={{
+                    borderRadius: 2,
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#3f3f46",
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#10b981",
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#10b981",
+                      borderWidth: "2px",
                     },
                   }}
                 >
-                  VOD Archive
-                </Typography>
-              )}
-              <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 500 }}>
-                {totalVods !== null && `${totalVods.toLocaleString()} videos available`}
-              </Typography>
-            </Box>
-          </Box>
-        </Fade>
-        
-        <Box 
-          className="animate-block-appear"
-          sx={{ 
-            mb: 4,
-            p: 3,
-            borderRadius: 3,
-            backgroundColor: "#27272a",
-            border: "1px solid",
-            borderColor: "#3f3f46",
-            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
-          }}
-        >
-          <Box sx={{ 
-            display: "flex", 
-            flexDirection: isMobile ? "column" : "row", 
-            alignItems: isMobile ? "stretch" : "center",
-            gap: 2,
-          }}>
-            <FormControl sx={{ minWidth: { xs: "100%", sm: 180 } }}>
-              <InputLabel id="filter-label">Filter By</InputLabel>
-              <Select 
-                labelId="filter-label" 
-                label="Filter By" 
-                value={filter} 
-                onChange={changeFilter}
-                sx={{
-                  borderRadius: 2,
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#3f3f46",
-                  },
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#10b981",
-                  },
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#10b981",
-                    borderWidth: "2px",
-                  },
-                }}
-              >
-                {FILTERS.map((data, i) => (
-                  <MenuItem key={i} value={data}>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      {data === "Default" && "📋"}
-                      {data === "Date" && "📅"}
-                      {data === "Title" && "🔍"}
-                      {data === "Game" && "🎮"}
-                      <Typography>{data}</Typography>
-                    </Box>
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            
-            {filter === "Date" && (
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  {FILTERS.map((data, i) => (
+                    <MenuItem key={i} value={data}>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        {data === "Default" && "📋"}
+                        {data === "Date" && "📅"}
+                        {data === "Title" && "🔍"}
+                        {data === "Game" && "🎮"}
+                        <Typography>{data}</Typography>
+                      </Box>
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              
+              {filter === "Date" && (
                 <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row", flex: 1 }}>
                   <DatePicker
                     minDate={dayjs(START_DATE)}
@@ -246,8 +255,7 @@ export default function Vods() {
                     }}
                   />
                 </Box>
-              </LocalizationProvider>
-            )}
+              )}
             
             {filter === "Title" && (
               <TextField 
@@ -377,8 +385,9 @@ export default function Vods() {
             />
           </Box>
         )}
-      </Container>
-      <Footer />
-    </SimpleBar>
+        </Container>
+        <Footer />
+      </SimpleBar>
+    </LocalizationProvider>
   );
 }
