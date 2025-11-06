@@ -32,11 +32,11 @@ Create a `.env` file:
 
 ```env
 REACT_APP_CHANNEL=Quin69
-REACT_APP_TWITCH_ID=your_twitch_id
-REACT_APP_VODS_API_BASE=https://your-api-url
-REACT_APP_GITHUB=https://github.com/your-repo
-REACT_APP_START_DATE=2020-01-01
-REACT_APP_DEFAULT_DELAY=43200
+REACT_APP_TWITCH_ID=56649026
+REACT_APP_VODS_API_BASE=https://archive.overpowered.tv/quin69
+REACT_APP_GITHUB=https://github.com/mihaissh/quin69VOD
+REACT_APP_START_DATE=2024-07-01
+REACT_APP_DEFAULT_DELAY=43199
 ```
 
 ## Tech Stack
