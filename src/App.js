@@ -26,9 +26,7 @@ export default function App() {
         <Parent className="min-h-screen bg-zinc-900">
           <Suspense fallback={<Loading />}>
             <Routes>
-              <Route path="*" element={<NotFound channel={channel} />} />
               <Route
-                exact
                 path="/"
                 element={
                   <>
@@ -37,12 +35,13 @@ export default function App() {
                   </>
                 }
               />
-              <Route exact path="/vods" element={<><Navbar channel={channel} twitchId={twitchId} /><Vods channel={channel} twitchId={twitchId} VODS_API_BASE={VODS_API_BASE} /></>} />
-              <Route exact path="/vods/:vodId" element={<><Navbar channel={channel} twitchId={twitchId} /><YoutubeVod channel={channel} twitchId={twitchId} type="vod" VODS_API_BASE={VODS_API_BASE} /></>} />
-              <Route exact path="/live/:vodId" element={<><Navbar channel={channel} twitchId={twitchId} /><YoutubeVod channel={channel} twitchId={twitchId} type="live" VODS_API_BASE={VODS_API_BASE} /></>} />
-              <Route exact path="/youtube/:vodId" element={<><Navbar channel={channel} twitchId={twitchId} /><YoutubeVod channel={channel} twitchId={twitchId} VODS_API_BASE={VODS_API_BASE} /></>} />
-              <Route exact path="/games/:vodId" element={<><Navbar channel={channel} twitchId={twitchId} /><Games channel={channel} twitchId={twitchId} VODS_API_BASE={VODS_API_BASE} /></>} />
-              <Route exact path="/manual/:vodId" element={<><Navbar channel={channel} twitchId={twitchId} /><CustomVod channel={channel} twitchId={twitchId} type="manual" VODS_API_BASE={VODS_API_BASE} /></>} />
+              <Route path="/vods" element={<><Navbar channel={channel} twitchId={twitchId} /><Vods channel={channel} twitchId={twitchId} VODS_API_BASE={VODS_API_BASE} /></>} />
+              <Route path="/vods/:vodId" element={<><Navbar channel={channel} twitchId={twitchId} /><YoutubeVod channel={channel} twitchId={twitchId} type="vod" VODS_API_BASE={VODS_API_BASE} /></>} />
+              <Route path="/live/:vodId" element={<><Navbar channel={channel} twitchId={twitchId} /><YoutubeVod channel={channel} twitchId={twitchId} type="live" VODS_API_BASE={VODS_API_BASE} /></>} />
+              <Route path="/youtube/:vodId" element={<><Navbar channel={channel} twitchId={twitchId} /><YoutubeVod channel={channel} twitchId={twitchId} VODS_API_BASE={VODS_API_BASE} /></>} />
+              <Route path="/games/:vodId" element={<><Navbar channel={channel} twitchId={twitchId} /><Games channel={channel} twitchId={twitchId} VODS_API_BASE={VODS_API_BASE} /></>} />
+              <Route path="/manual/:vodId" element={<><Navbar channel={channel} twitchId={twitchId} /><CustomVod channel={channel} twitchId={twitchId} type="manual" VODS_API_BASE={VODS_API_BASE} /></>} />
+              <Route path="*" element={<NotFound channel={channel} />} />
             </Routes>
           </Suspense>
         </Parent>
